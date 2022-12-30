@@ -44,10 +44,10 @@
               <button class="btn btn-secondary dropdown-toggle form-control mt-2 mb-2" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 Кафедра
               </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Кафедра 1</a></li>
-                <li><a class="dropdown-item" href="#">Кафедра 2</a></li>
-                <li><a class="dropdown-item" href="#">Кафедра 3</a></li>
+              <ul class="dropdown-menu " aria-labelledby="dropdownMenuButton1">
+                <li><a class="dropdown" href="#">Кафедра 1</a></li>
+                <li><a class="dropdown" href="#">Кафедра 2</a></li>
+                <li><a class="dropdown" href="#">Кафедра 3</a></li>
               </ul>
             </div>
 

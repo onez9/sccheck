@@ -6,7 +6,7 @@
 		<div class="row">
 			<div class="col-5" >
 				<button v-if="new_mode_user==false" @click="new_mode_user=true ; new_mode_cource=false" class="btn btn-success mt-1 mb-5 me-1">Новый пользователь</button>
-				<button v-if="new_mode_cource==false" @click="new_mode_cource=true ; new_mode_user=false" class="btn btn-success mt-1 mb-5 me-1">Новый Курс</button>
+			
 				
 				
 				<div v-if="new_mode_user==true">
@@ -29,21 +29,7 @@
 				
 				
 				
-				<div v-if="new_mode_cource==true">
-					<h5>Новый курс</h5>
-					<label for="name_cource">Название</label>
-					<input v-model="name_cource" type="text" class="form-control" id="name_cource">
-					<label for="theme_cource">Тема</label>
-					<input v-model="theme" type="text" class="form-control" id="theme">
-					<label for="description_cource">Описание</label>
-					<input v-model="description_cource" type="text" class="form-control" id="description_cource">
-					<label for="avatar_cource">Аватар</label>
-					<input type="file" class="form-control" id="avatar_cource">
-				</div>
-				
-				<button v-if="new_mode_cource==true" @click="addCource" class="btn btn-success mt-1 mb-5 me-1">Добавить</button>
-				<button v-if="new_mode_cource==true" @click="addCourceCancel" class="btn btn-success mt-1 mb-5">Отмена</button>
-				
+
 
 
 			</div>
