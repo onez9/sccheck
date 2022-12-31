@@ -30,8 +30,28 @@ import { RouterLink, RouterView } from 'vue-router'
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
-              <router-link class="nav-link" to="/cources"><i class="bi-journals"></i> Курсы</router-link>
+              <router-link class="nav-link" to="/cources"><i class="bi-person-circle"></i> Курсы</router-link>
             </li>
+
+
+
+
+            <!-- <li class="nav-item dropdown">
+
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi-journals"></i>
+                Курсы
+              </a>
+              <ul class="dropdown-menu">
+                
+                <li><router-link class="nav-link dropdown-item" to="/cources"><i class="bi-plus"></i> Новый курс</router-link></li>
+                <li><router-link class="nav-link dropdown-item" to="#"> Мои курсы</router-link></li>
+                <li><router-link class="nav-link dropdown-item" to="#"> Все курсы</router-link></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#"></a></li>
+              </ul>
+            </li> -->
+
 
 
           </ul>

@@ -10,7 +10,14 @@
   </div> -->
 
   <h3>Сайт для тестирования навыков программирования</h3>
-  <p>Добро пожаловать!<br>Большое количество качественных и бесплатных курсов</p>
+  <p>Добро пожаловать!<br>Большое количество качественных и бесплатных курсов от настоящих профи</p>
+  <p>Просто степик. Просто иди нахуй!</p>
+
+
+  <div class="d-grid gap-2 col-6 mx-auto">
+    <button class="btn btn-primary" type="button">Кнопка</button>
+    <button class="btn btn-primary" type="button">Кнопка</button>
+  </div>
   <!-- <img src="/assets/img/main.jpg" class="img-fluid"> -->
 
   <!-- <img src="assets/img/main.jpg" class="img-fluid"> -->
