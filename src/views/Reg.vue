@@ -17,12 +17,12 @@
         <!-- <div class="col-sm-3"></div> -->
         <div class="col-sm-5 d-flex d-column flex-column">
           <h1>Зарегистрироваться как:</h1>
-          <buntton @click="reg_prep=true;reg_stud=false" class="btn btn-success tt1 mb-2">Преподаватель</buntton>
-          <buntton @click="reg_stud=true;reg_prep=false" class="btn btn-success tt1 mb-2">Студент</buntton>
+          <button @click="reg_prep=true;reg_stud=false" class="btn btn-success tt1 mb-2">Преподаватель</button>
+          <button @click="reg_stud=true;reg_prep=false" class="btn btn-success tt1 mb-2">Студент</button>
 
 
 
-          <form v-if="reg_prep==true" action="/addUser" method="post" enctype="multipart/form-data">
+          <form v-if="reg_prep==true">
             <label for="firstname">Имя:</label>
             <input name="firstname" type="text" id="firstname" class="form-control" required>
             <label for="lastname">Фамилия:</label>
@@ -57,7 +57,7 @@
             <label for="pass2">Повторите пароль: {{pass2}}</label>
             <input v-model="pass2" name="password2" type="password" id="pass2" class="form-control" required>
             <button :class="{'btn btn-success mt-1 me-1': true, 'disabled': (pass1!=pass2)}" type="submit"><i class="bi-person-plus"></i> Создать</button>
-
+  
             <router-link to="/auth" customv-slot="{ navigate }">
               <button class="btn btn-success mt-1" @click="navigate" role="link">
                 <i class="bi-box-arrow-in-left"></i> Авторизация
@@ -65,7 +65,7 @@
             </router-link>
           </form>
 
-          <form v-if="reg_stud==true" action="/addUser" method="post" enctype="multipart/form-data">
+          <form v-if="reg_stud==true" method="POST" action="http://localhost:3000/register">
             <label for="firstname">Имя:</label>
             <input name="firstname" type="text" id="firstname" class="form-control" required>
             <label for="lastname">Фамилия:</label>
@@ -139,6 +139,7 @@ export default {
       password: "",
       pass1: "",
       pass2: "",
+      is_admin: "",
 
       reg_prep: false,
       reg_stud: false,
@@ -153,8 +154,8 @@ export default {
       // const sha256 = crypto.createHash('sha256');
       // const hash = sha256.update(password).digest('base64');
 
-
-      const response = await fetch('/addUser', {
+      console.log(123)
+      const response = await fetch('http://localhost:3000/adduser', {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json'
@@ -167,9 +168,9 @@ export default {
         }) 
       });
 
-      const jsonResult = await response.json();
+      // const jsonResult = await response.json();
 
-      console.log(jsonResult);
+      // console.log(jsonResult);
     },
     async testPost() {
       // Отправляем запрос типа POST

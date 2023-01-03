@@ -6,9 +6,10 @@
     <!-- <p>Список товаров</p> -->
   
     <div class="row">
-      <div class="col-7">
+      <div class="col-7 border border-success rounded p-1">
         <div v-if="new_mode_cource==true" class="border border-success rounded p-1">
           <h5>Новый курс</h5>
+
           <label for="name_cource">Название</label>
           <input v-model="name_cource" type="text" class="form-control" id="name_cource">
           <label for="theme_cource">Тема</label>
@@ -37,7 +38,7 @@
     </div>
     <div class="row">    
       <!-- <div class="col-2"></div> -->
-      <div class="col-7">
+      <div class="col-7 border border-primary rounded p-1 mt-1">
         <h5>Мои курсы</h5>
 
         <div @click="activeElem = element" v-for="(element, index) in list_cources" :key="index">
@@ -62,17 +63,20 @@
             </div>
 
             <label v-if="element.editmode"> Задач в этом курсе:<br> </label>
-            <label class="form-control" v-if="element.editmode">{{ element.list_tasks.length }}</label>
+            <label class="form-control bg-light" v-if="element.editmode">{{ element.list_tasks.length }}</label>
               <!-- тут кнокпи для добавления задач -->
             <div class="d-flex">
               
             </div>
             <div class="flex-grow-1 mb-1 mt-1 me-1"></div>
             <div v-if="element.editmode" >
-              <label for="ntask">Название задача</label>
-              <textarea placeholder="Название задачи" v-model="element.ntask" class="form-control" name="ntask" id="ntask" rows="10"></textarea>
-              <label for="dtask">Описание задача</label>
-              <input placeholder="Описание задачи" v-model="element.dtask" class="form-control" name="dtask" id="dtask" rows="10">
+              <label for="ntask">Название задачи</label>
+              <input placeholder="Название задачи" v-model="element.ntask" class="form-control" name="ntask" id="ntask">
+
+              <label for="dtask">Описание задачи</label>
+              <textarea placeholder="Описание задачи" v-model="element.dtask" class="form-control" name="dtask" id="dtask" rows="10"></textarea>
+              <label for="answer_task">Результат выполнения программы</label>
+              <textarea placeholder="Вывод программы" v-model="element.answer_task" class="form-control" name="answer_task" id="answer_task" rows="10"></textarea>
               <!-- number is: {{number}} -->
               <label for="number">Укажите рекоммендуемое время для прохождения задачи (мин):</label>
               <input v-model="element.time" type="number" id="number" class="form-control">
@@ -88,12 +92,39 @@
 
             <!-- {{element}} -->
             <div class="d-flex" v-if="element.show_task" v-for="(task, index) in element.list_tasks" :key="index">
-              <div class="form-control border ronded border-primary p-1 mb-1">
+              <div class="form-control border ronded border-success p-1 mb-1">
                 <!-- {{element}} -->
-                <label class="bg-light form-control mb-1 mt-1 me-1">Номер задачи:<br> {{index}}</label>
-                <label class="form-control mb-1 mt-1 me-1">Название задачи:<br>{{ task.name }}</label>
-                <label class="form-control mb-1 mt-1 me-1">Описание задачи:<br>{{ task.dtask }}</label>
-                <label class="form-control mb-1 mt-1">Время на выполнение задачи<br>{{ task.time }}</label>
+
+                <label class="bg-warning form-control mb-1 mt-1 me-1">Номер задачи: {{index}}</label>
+
+                <label class="">Название задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_ntask" class="form-control mb-1 mt-1 me-1">{{ task.ntask }}</label>
+                  <input v-if="task.edit_ntask" placeholder="Название задачи" v-model="task.ntask" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_ntask" @click="task.edit_ntask=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_ntask" @click="task.edit_ntask=false" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Описание задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_dtask" class="form-control mb-1 mt-1 me-1">{{ task.dtask }}</label>
+                  <input v-if="task.edit_dtask" placeholder="Описание задачи" v-model="task.dtask" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_dtask" @click="task.edit_dtask=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_dtask" @click="task.edit_dtask=false" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Вывод программы (Ответ который должен получиться):</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_answer_task" class="form-control mb-1 mt-1 me-1">{{ task.answer_task }}</label>
+                  <input v-if="task.edit_answer_task" placeholder="Вывод программы:" v-model="task.answer_task" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_answer_task" @click="task.edit_answer_task=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_answer_task" @click="task.edit_answer_task=false" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Время на выполнение задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_time" class="form-control mb-1 mt-1 me-1">{{ task.time }}</label>
+                  <input v-if="task.edit_time" placeholder="Время на выполнение задачи:" v-model="task.time" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_time" @click="task.edit_time=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_time" @click="task.edit_time=false" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
               </div>
             </div>
 
@@ -126,40 +157,93 @@ export default {
 
 	},
 	async mounted() {
-
+    await this.getcources()
 	},
 	methods: {
     async closeEditMode(element) {
       element.editmode=false
       element.show_task=false
+      element.dtask=""
+      element.ntask=""
+      element.answer_task=""
+      element.time=10
 
     },
     async addTask(cource_element) {
       cource_element.list_tasks.push({
-        dtask: cource_element.task_text,
+        dtask: cource_element.dtask,
+        ntask: cource_element.ntask,
+        answer_task: cource_element.answer_task,
         time: cource_element.time
       })
-      cource_element.task_text=""
+      cource_element.ntask=""
+      cource_element.dtask=""
+      cource_element.answer_task=""
       cource_element.time=10
     },
     async clear_different(element) {
       this.task_text=""
     },
+
+
 		async clear_input_for_cource() {
 			this.name_cource = ""
 			this.theme_cource = ""
 			this.description_cource = ""
 			this.new_mode_cource = false
 		},
-		async addCource() {
 
-      this.list_cources.push({
-        name: this.name_cource,
-        theme: this.theme_cource,
-        description: this.description_cource,
-        list_tasks: []
+    async getcources() {
+      const response = await fetch('http://localhost:3000/cource/get', {
+        method: 'POST',
+
       })
+      // console.log(await response.json())
+      let result = await response.json()
+      console.log(result)
+      for (let i=0;i<result.length;i++) {
+        result[i].list_tasks=[]
+      }
 
+      this.list_cources = result
+    },
+		async addCource() {
+      let formData = new FormData()
+      let input = document.querySelector('input[type="file"]')
+
+      formData.append('file', input.files[0])
+      formData.append('name', this.name_cource)
+      formData.append('theme', this.theme_cource)
+      formData.append('description', this.description_cource)
+      formData.append('lecturer_id', 22)
+    
+      console.log(input.files[0])
+      console.log(this.name_cource)
+      console.log(this.theme_cource)
+      console.log(this.description_cource)
+      console.log(22)
+
+
+      const response = fetch('http://localhost:3000/cource/add', {
+        method: 'POST',
+        body: formData
+
+      })
+      // console.log(await response.json())
+      let result = await (await response).json()
+      console.log(result)
+
+      this.list_cources = result
+
+
+
+
+
+      
+
+
+      // this.list_cources.push(pack)
+      document.querySelector('input[type=file]').value = "";
       this.name_cource = ""
 			this.theme_cource = ""
 			this.description_cource = ""

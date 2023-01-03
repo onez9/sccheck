@@ -9,9 +9,9 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-5">
-          <form action="/authentication1" method="POST" enctype="multipart/form-data">
+          <form action="http://localhost:3000/login" method="POST">
             <label for="email">Email:</label>
-            <input name="email" type="text" id="email" class="form-control" placeholder="Введите email" required>
+            <input name="email" type="email" id="email" class="form-control" placeholder="Введите email" required>
             <label for="pass">Пароль:</label>
             <input name="password" type="password" id="pass" class="form-control" placeholder="Введите пароль" required>
             

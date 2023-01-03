@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-
+import axios from 'axios'
 </script>
 
 <template class="d-flex flex-column min-vh-100">
@@ -32,6 +32,11 @@ import { RouterLink, RouterView } from 'vue-router'
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
               <router-link class="nav-link" to="/cources"><i class="bi-person-circle"></i> Курсы</router-link>
             </li>
+            <li class="nav-item">
+              <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
+              <router-link class="nav-link" to="/mycources"><i class="bi-person-circle"></i> Тестирование</router-link>
+            </li>
+
 
 
 
@@ -91,30 +96,28 @@ import { RouterLink, RouterView } from 'vue-router'
       <div class="row">
         
         <div class="col-6 col-md-2">
-          <h5>Section</h5>
+          <h5>тестирование онлайн</h5>
           <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Home</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Features</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Pricing</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">FAQs</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">About</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Домашняя</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вакансии</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вопросы и ответы</a></li>
+            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">О нас</a></li>
           </ul>
         </div>
-  
 
-  
-        <div class="col-md-5 offset-md-1 mb-3">
+
+
+        <!-- <div class="col-md-5 offset-md-1 mb-3">
           <form>
-            <h5>Subscribe to our newsletter</h5>
-            <p>Monthly digest of what's new and exciting from us.</p>
+            <h5>Подпишитесь на рассылку писем введя туда свой email</h5>
             <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-              <label for="newsletter1" class="visually-hidden">Email address</label>
+              <label for="newsletter1" class="visually-hidden">Адрес электронной почты</label>
               <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
               <button class="btn btn-primary" type="button">Subscribe</button>
             </div>
-          </form>
+          </form> 
         
-        </div>
+        </div> -->
       </div>
   
       <!-- <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
@@ -134,6 +137,13 @@ import { RouterLink, RouterView } from 'vue-router'
 
 
 <script>
+
+// const app = Vue.createApp({})
+// app.component('component-a', {})
+// app.component('component-b', {})
+// app.component('component-c', {})
+// app.mount('#app')
+
 
 export default {
   data() {
