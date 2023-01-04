@@ -17,7 +17,7 @@
           <label for="description_cource">Описание курса</label>
           <textarea v-model="description_cource" type="text" class="form-control" id="description_cource"></textarea>
           <label for="avatar_cource">Аватар</label>
-          <input type="file" class="form-control" id="avatar_cource">
+          <input v-on:change="change_file_input(e)" type="file" class="form-control" id="avatar_cource">
 
 
           <!-- 
@@ -29,7 +29,7 @@
 
         </div>
 
-        <button v-if="new_mode_cource==true" @click="addCource" class="btn btn-info mt-1 mb-1 me-1">Создать</button>
+        <button v-if="new_mode_cource==true " @click="addCource" class="btn btn-info mt-1 mb-1 me-1">Создать</button>
         <button v-if="new_mode_cource==true" @click="clear_input_for_cource" class="btn btn-success m-1">Закрыть</button>
         <button v-if="new_mode_cource==false" @click="new_mode_cource=true" class="btn border border-primary form-control mt-1 mb-1 me-1">Новый Курс</button>
         
@@ -43,6 +43,7 @@
 
         <div @click="activeElem = element" v-for="(element, index) in list_cources" :key="index">
           <div class="border-primary border rounded p-1 mb-2">
+            {{element.id}}
             <label v-if="element.editmode">Название курса:</label>
             <div class="d-flex">
               <input v-if="element.editmode" placeholder="Название курса" type="text" class="form-control  mt-1 me-1 mb-1" v-model="element.name">
@@ -150,16 +151,22 @@ export default {
 			theme_cource: "",
 			description_cource: "",
 			time: "",
-			new_mode_cource: false
+			new_mode_cource: false,
+      show_create_button: false
+      
 		}
 	},
 	computed: {
 
 	},
 	async mounted() {
-    await this.getcources()
+    // await this.getcources()
 	},
 	methods: {
+    async change_file_input(e) {
+      if (e.target.files.length)
+        this.show_create_button=true
+    },
     async closeEditMode(element) {
       element.editmode=false
       element.show_task=false
@@ -169,17 +176,43 @@ export default {
       element.time=10
 
     },
-    async addTask(cource_element) {
-      cource_element.list_tasks.push({
-        dtask: cource_element.dtask,
-        ntask: cource_element.ntask,
-        answer_task: cource_element.answer_task,
-        time: cource_element.time
+    async addTask(element) {
+      
+      let task = {
+        dtask: element.dtask,
+        ntask: element.ntask,
+        answer_task: element.answer_task,
+        time: element.time,
+        id: element.id
+      }
+      element.list_tasks.push(task)
+
+
+
+      const response = await fetch('http://localhost:3000/task/add', {
+        method: 'POST',
+        body: JSON.stringify({"1": 1})
       })
-      cource_element.ntask=""
-      cource_element.dtask=""
-      cource_element.answer_task=""
-      cource_element.time=10
+      console.log(await response.json())
+      // let result = await response.json()
+      // console.log(result)
+
+      // this.list_tasks = result
+
+
+
+
+
+
+
+
+
+
+
+      element.ntask=""
+      element.dtask=""
+      element.answer_task=""
+      element.time=10
     },
     async clear_different(element) {
       this.task_text=""
@@ -224,13 +257,13 @@ export default {
       console.log(22)
 
 
-      const response = fetch('http://localhost:3000/cource/add', {
+      const response = await fetch('http://localhost:3000/cource/add', {
         method: 'POST',
         body: formData
 
       })
       // console.log(await response.json())
-      let result = await (await response).json()
+      let result = await response.json()
       console.log(result)
 
       this.list_cources = result

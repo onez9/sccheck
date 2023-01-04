@@ -77,6 +77,7 @@ router.post('/add', async (req, res) => {
 		stmt.finalize();
 
 	});
+	
 	db.serialize(() => {
 		const stmt = db.all(`select * from cources`, (err, rows) => {
 			if (err) console.log(err)
