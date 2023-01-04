@@ -1,5 +1,7 @@
+//process.chdir(__dirname);
+// console.log(__dirname)
 import express from 'express'
-const urlencodedParser = express.urlencoded({extended: false})
+
 import cookieParser from 'cookie-parser'
 // import session from 'express-session'
 // import csrf from 'csurf'
@@ -20,20 +22,32 @@ import config from './config/config.mjs'
 
 // const db1 = new DB("../curs_summer.db")
 const app = express()
-const router = express.Router()
+// const router = express.Router()
 
-const db = new DB("../curs_summer.db")
+// const db = new DB("../curs_summer.db")
 
-// router.use(bodyParser.urlencoded({ extended: false }));
-// router.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(bodyParser.json());
+// const urlencodedParser = express.urlencoded({extended: false})
+// app.use(urlencodedParser)
 
-
-// app.use(express.json());
+app.use(express.json());
 // // app.use(cookieParser('secret key'));
 app.use(fileUpload({    
 	useTempFiles : true,
 	tempFileDir : 'Pictures/'
 }));
+
+// CORS middleware
+const allowCrossDomain = function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header('Access-Control-Allow-Methods', '*');
+	res.header('Access-Control-Allow-Headers', '*');
+	next();
+}
+app.use(allowCrossDomain) // позволяем запросы с разных сайтов
+
+
 
 
 import loginController from './Controllers/loginController.mjs'
@@ -44,14 +58,7 @@ import taskController from './Controllers/taskController.mjs'
 import courceController from './Controllers/courceController.mjs'
 
 
-// CORS middleware
-const allowCrossDomain = function(req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Methods', '*');
-	res.header('Access-Control-Allow-Headers', '*');
-	next();
-}
-app.use(allowCrossDomain) // позволяем запросы с разных сайтов
+
 
 app.use('/login', loginController);
 app.use('/logout', logoutController);
@@ -69,7 +76,6 @@ app.get('/reg', (req, res) => {
 	res.redirect("http://localhost:5173/reg")
 
 })
-
 
 /*
 	db.serialize(() => {
