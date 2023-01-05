@@ -130,7 +130,8 @@
 
 <script>
 // import { crypto } from 'crypto'
-const url='http://192.168.149.184:3000'
+// const url='http://192.168.149.184:3000'
+const url='http://192.168.0.105:3000'
 export default {
   data() {
     return {

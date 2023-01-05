@@ -34,7 +34,8 @@ import axios from 'axios'
 </template>
 
 <script>
-const url='http://192.168.149.184:3000'
+// const url='http://192.168.149.184:3000'
+const url='http://192.168.0.105:3000'
 export default {
   // el: '#elements',
   data() {
@@ -57,7 +58,7 @@ export default {
       // console.log('123')
       // this.cart_items.splice(this.cart_items.indexOf(element), 1)
       // alert(this.elements.indexOf(element))
-      const response = await fetch('http://localhost:3000/get_users', {
+      const response = await fetch(`${url}/get_users`, {
         method: 'GET',
       })
       this.partitens = await response.json();

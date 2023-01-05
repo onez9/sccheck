@@ -34,7 +34,7 @@ import axios from 'axios'
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
-              <router-link class="nav-link" to="/mycources"><i class="bi-person-circle"></i> Тестирование</router-link>
+              <router-link class="nav-link" to="/mycources"><i class="bi-journal-text"></i> Тестирование</router-link>
             </li>
 
 

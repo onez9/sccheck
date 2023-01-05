@@ -56,13 +56,6 @@ router.post('/upd', urlencodedParser, async (req, res) => {
 			})
 
 			break;
-		case 4:
-			stmt = db.prepare('update tasks set runtime=? where id=?')
-			stmt?.run([req.body.runtime, req.body.id], (err, row) => {
-				console.log(row)
-				stmt.finalize()
-			})
-			break;
 
 	}
 
@@ -120,8 +113,8 @@ router.post('/add', urlencodedParser, async (req, res) => {
 
 	});
 
-	let stmt = db.prepare('insert into tasks(ntask,dtask,answer_task,runtime,cource_id) values (?,?,?,?,?)')
-	stmt.run(req.body.ntask, req.body.dtask, req.body.answer_task, req.body.runtime, req.body.id)
+	let stmt = db.prepare('insert into tasks(ntask,dtask,answer_task,cource_id) values (?,?,?,?)')
+	stmt.run(req.body.ntask, req.body.dtask, req.body.answer_task, req.body.id)
 	stmt.finalize()
 
 	stmt = db.prepare('select * from tasks')

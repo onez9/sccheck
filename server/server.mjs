@@ -57,7 +57,7 @@ import registeradminController from './Controllers/registeradminController.mjs'
 import taskController from './Controllers/taskController.mjs'
 import courceController from './Controllers/courceController.mjs'
 import userController from './Controllers/userController.mjs'
-
+import answerController from './Controllers/answerController.mjs'
 
 
 app.use('/login', loginController);
@@ -67,9 +67,10 @@ app.use('/register-admin', registeradminController);
 app.use('/cource', courceController);
 app.use('/task', taskController);
 app.use('/user', userController);
+app.use('/answer', answerController);
 
 
-const ip='192.168.149.184'
+const ip='192.168.0.105'
 const port=3000
 const url=`http://${ip}:5173`
 app.get('/', (req, res) => {

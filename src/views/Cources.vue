@@ -18,7 +18,8 @@
           <textarea v-model="description_cource" type="text" class="form-control" id="description_cource"></textarea>
           <label for="avatar_cource">Аватар</label>
           <input type="file" class="form-control" id="avatar_cource">
-
+          <label>Время прохождения курса:</label>
+          <input placeholder="Время прохождения курса" type="text" class="form-control mt-1 me-1 mb-1" v-model="runtime_cource">
 
           <!-- 
           <label class="mt-3" for="description_task">Описание задачи </label>
@@ -59,6 +60,8 @@
                 <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
                 <label>Описание курса:</label>
                 <input placeholder="Описание курса" type="text" class="form-control mt-1 me-1 mb-1" v-model="element.description_cource">
+                <label>Время прохождения курса:</label>
+                <input placeholder="Время прохождения курса" type="text" class="form-control mt-1 me-1 mb-1" v-model="element.runtime_cource">
 
                 <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
@@ -91,8 +94,8 @@
                 <label for="answer_task">Результат выполнения программы</label>
                 <textarea placeholder="Вывод программы" v-model="element.answer_task" class="form-control" name="answer_task" id="answer_task" rows="3"></textarea>
                 <!-- number is: {{number}} -->
-                <label for="number">Укажите рекоммендуемое время для прохождения задачи (мин):</label>
-                <input v-model="element.runtime" type="number" id="number" class="form-control">
+                <!-- <label for="number">Укажите рекоммендуемое время для прохождения задачи (мин):</label>
+                <input v-model="element.runtime" type="number" id="number" class="form-control"> -->
                 <div class="d-flex">
                   <button @click="addTask(element)" class="btn btn-info mt-1 mb-1 me-1"><i class="bi-check-square"></i></button>
                   <button @click="clear_different(element)" class="btn btn-warning mt-1 mb-1 me-1"><i class="bi-x-square"></i></button>
@@ -130,13 +133,6 @@
                   <button v-if="!task.edit_answer_task" @click="task.edit_answer_task=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
                   <button v-if="task.edit_answer_task" @click="edit_task(task, 3)" class="btn btn-success mt-1 mb-1">ok</button>
                 </div>
-                <label class="">Время на выполнение задачи:</label>
-                <div class="d-flex">
-                  <label v-if="!task.edit_runtime" class="form-control mb-1 mt-1 me-1">{{ task.runtime }}</label>
-                  <input v-if="task.edit_runtime" placeholder="Время на выполнение задачи:" v-model="task.runtime" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
-                  <button v-if="!task.edit_runtime" @click="task.edit_runtime=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
-                  <button v-if="task.edit_runtime" @click="edit_task(task, 4)" class="btn btn-success mt-1 mb-1">ok</button>
-                </div>
               </div>
             </div>
 
@@ -171,6 +167,9 @@
                 <label>Описание курса:</label>
                 <label class="form-control mt-1 me-1 mb-1">{{element.description_cource}}</label>
 
+                <label>Время прохождения курса:</label>
+                <label class="form-control mt-1 me-1 mb-1">{{element.runtime_cource}}</label>
+
                 <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
                   
@@ -178,8 +177,8 @@
         
                 </div>
               </div>
-              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button>
-              <button v-if="!element.editmode" @click="subscribe_on_cource(element) " class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-link"></i></button>
+              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-eyeglasses"></i></button>
+              <button v-if="!element.editmode" @click="subscribe_on_cource(element) " class="btn btn-info mt-1 me-1 mb-1"><i class="bi-link"></i></button>
             </div>
 
             <!-- {{element.show_task}} -->
@@ -211,13 +210,6 @@
                   <input v-if="task.edit_answer_task" placeholder="Вывод программы:" v-model="task.answer_task" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
                   <button v-if="!task.edit_answer_task" @click="task.edit_answer_task=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
                   <button v-if="task.edit_answer_task" @click="edit_task(task, 3)" class="btn btn-success mt-1 mb-1">ok</button>
-                </div>
-                <label class="">Время на выполнение задачи:</label>
-                <div class="d-flex">
-                  <label v-if="!task.edit_runtime" class="form-control mb-1 mt-1 me-1">{{ task.runtime }}</label>
-                  <input v-if="task.edit_runtime" placeholder="Время на выполнение задачи:" v-model="task.runtime" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
-                  <button v-if="!task.edit_runtime" @click="task.edit_runtime=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
-                  <button v-if="task.edit_runtime" @click="edit_task(task, 4)" class="btn btn-success mt-1 mb-1">ok</button>
                 </div>
               </div>
             </div>
@@ -252,13 +244,15 @@
 </template>
 
 <script>
-const url='http://192.168.149.184:3000'
+// const url='http://192.168.149.184:3000'
+const url='http://192.168.0.105:3000'
 export default {
 	data() {
 		return {
       task_text: "",
       list_cources: [],
       list_cources_all: [],
+      runtime_cource: 0,
       list_tasks: [],
 			name_cource: "",
 			theme_cource: "",
@@ -294,10 +288,6 @@ export default {
           task.edit_answer_task=false
           json_pack = {id: task.id, answer_task: task.answer_task, number: 3}
           break;
-        case 4:
-          task.edit_runtime=false
-          json_pack = {id: task.id, runtime: task.runtime, number: 4}
-          break;
         default:
           break;
       }
@@ -314,17 +304,20 @@ export default {
 
     },
     async update_cource(element) {
+      let pack={
+        name: element.name_cource,
+        theme: element.theme_cource,
+        description: element.description_cource,
+        runtime: element.runtime_cource,
+        id: element.id
+      }
+      console.log('this is pack: ', pack)
       const response = await fetch(`${url}/cource/upd`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          name: element.name_cource,
-          theme: element.theme_cource,
-          description: element.description_cource,
-          id: element.id
-        })
+        body: JSON.stringify(pack)
       })
       console.log(await response.json())
     },
@@ -355,7 +348,7 @@ export default {
       element.dtask=""
       element.ntask=""
       element.answer_task=""
-      element.runtime=10
+      // element.runtime=10
 
     },
 
@@ -365,7 +358,6 @@ export default {
         dtask: element.dtask,
         ntask: element.ntask,
         answer_task: element.answer_task,
-        runtime: element.runtime,
         id: element.id
       }
       element.list_tasks.push(task)
@@ -388,7 +380,7 @@ export default {
       element.ntask=""
       element.dtask=""
       element.answer_task=""
-      element.runtime=10
+      // element.runtime=10
     },
 
 
@@ -401,6 +393,7 @@ export default {
 			this.name_cource = ""
 			this.theme_cource = ""
 			this.description_cource = ""
+      this.runtime_cource=10
 			this.new_mode_cource = false
 		},
 
@@ -466,12 +459,14 @@ export default {
       formData.append('file', input.files[0])
       formData.append('name', this.name_cource)
       formData.append('theme', this.theme_cource)
+      formData.append('runtime', this.runtime_cource)
       formData.append('description', this.description_cource)
       formData.append('lecturer_id', 22)
     
       console.log(input.files[0])
       console.log(this.name_cource)
       console.log(this.theme_cource)
+      console.log(this.runtime_cource)
       console.log(this.description_cource)
       console.log(22)
       // formData={1:1,2:2}
@@ -500,6 +495,7 @@ export default {
       document.querySelector('input[type=file]').value = "";
       this.name_cource = ""
 			this.theme_cource = ""
+      this.runtime_cource = 10
 			this.description_cource = ""
 		}
 	}
