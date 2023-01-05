@@ -130,6 +130,7 @@
 
 <script>
 // import { crypto } from 'crypto'
+const url='http://192.168.149.184:3000'
 export default {
   data() {
     return {
@@ -155,7 +156,7 @@ export default {
       // const hash = sha256.update(password).digest('base64');
 
       console.log(123)
-      const response = await fetch('http://localhost:3000/adduser', {
+      const response = await fetch(`${url}/adduser`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json'

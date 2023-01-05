@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon server/server.mjs",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },

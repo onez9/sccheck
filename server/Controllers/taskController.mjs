@@ -92,6 +92,24 @@ router.post('/get', urlencodedParser, async (req, res) => {
 	})
 })
 
+router.post('/get_task_cource', urlencodedParser, async (req, res) => {
+	let db = new sqlite3.Database(db_path, (err) => {
+		if (err) {
+			console.log(err)
+		}
+		console.log('connect ok')
+
+	});
+
+	let stmt = db.prepare('select * from tasks where cource_id=?')
+	stmt.all(req.body.cource_id, (err, row) => {
+		console.log('id=1', row)
+		stmt.finalize()
+		res.json(row)
+	})
+})
+
+
 router.post('/add', urlencodedParser, async (req, res) => {
 	console.log(req.body)
 	let db = new sqlite3.Database(db_path, (err) => {

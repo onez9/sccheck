@@ -6,7 +6,7 @@
     <!-- <p>Список товаров</p> -->
   
     <div class="row">
-      <div class="col-7 border border-success rounded p-1">
+      <div class="col-5 border border-success rounded p-1">
         <div v-if="new_mode_cource==true" class="border border-success rounded p-1">
           <h5>Новый курс</h5>
 
@@ -38,7 +38,7 @@
     </div>
     <div class="row">    
       <!-- <div class="col-2"></div> -->
-      <div class="col-7 border border-primary rounded p-1 mt-1">
+      <div class="col-5 border border-primary rounded p-1 mt-1">
         <h5>Мои курсы</h5>
 
         <div @click="activeElem = element" v-for="(element, index) in list_cources" :key="index">
@@ -145,6 +145,106 @@
           <!-- {{element}} -->
         </div>
       </div>
+      <div class="col-2"></div>
+
+      <div class="col-5 border border-primary rounded p-1 mt-1">
+        <h5>Все курсы</h5>
+
+        <div @click="activeElem = element" v-for="(element, index) in list_cources_all" :key="index">
+          <div class="border-primary border rounded p-1 mb-2">
+            <!-- {{ element.id }} -->
+            <div class="d-flex">
+              <label v-if="!element.editmode" class="form-control mt-1 mb-1 me-1">{{element.name_cource}}</label>
+              <div v-if="element.editmode" class="d-flex flex-column w-100">
+                <!-- <input v-ifplaceholder="Название курса" type="text" class="form-control  mt-1 me-1 mb-1" v-model="element.name"> -->
+                <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button>-->
+                <img v-bind:src="element.imgpath" class="product-image">
+                
+                <label>Название курса:</label>
+                <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
+                <label class="form-control mt-1 me-1 mb-1">{{element.name_cource}}</label>
+                <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
+                <label>Тема курса:</label>
+                <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
+                <label class="form-control mt-1 me-1 mb-1">{{element.theme_cource}}</label>
+                <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
+                <label>Описание курса:</label>
+                <label class="form-control mt-1 me-1 mb-1">{{element.description_cource}}</label>
+
+                <div class="flex-grow-1 mb-3 bg-dark"></div>
+                <div class="d-flex justify-content-end">
+                  
+                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
+        
+                </div>
+              </div>
+              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button>
+              <button v-if="!element.editmode" @click="subscribe_on_cource(element) " class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-link"></i></button>
+            </div>
+
+            <!-- {{element.show_task}} -->
+
+            <!-- {{element}} -->
+            <div class="d-flex" v-if="element.show_tasks" v-for="(task, index) in element.list_tasks" :key="index">
+              <div class="form-control border ronded border-success p-1 mb-1">
+                <!-- {{element}} -->
+
+                <label class="bg-warning form-control mb-1 mt-1 me-1">Номер задачи: {{index}}</label>
+
+                <label class="">Название задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_ntask" class="form-control mb-1 mt-1 me-1">{{ task.ntask }}</label>
+                  <input v-if="task.edit_ntask" placeholder="Название задачи" v-model="task.ntask" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_ntask" @click="task.edit_ntask=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_ntask" @click="edit_task(task, 1)" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Описание задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_dtask" class="form-control mb-1 mt-1 me-1">{{ task.dtask }}</label>
+                  <input v-if="task.edit_dtask" placeholder="Описание задачи" v-model="task.dtask" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_dtask" @click="task.edit_dtask=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_dtask" @click="edit_task(task, 2)" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Вывод программы (Ответ который должен получиться):</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_answer_task" class="form-control mb-1 mt-1 me-1">{{ task.answer_task }}</label>
+                  <input v-if="task.edit_answer_task" placeholder="Вывод программы:" v-model="task.answer_task" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_answer_task" @click="task.edit_answer_task=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_answer_task" @click="edit_task(task, 3)" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+                <label class="">Время на выполнение задачи:</label>
+                <div class="d-flex">
+                  <label v-if="!task.edit_runtime" class="form-control mb-1 mt-1 me-1">{{ task.runtime }}</label>
+                  <input v-if="task.edit_runtime" placeholder="Время на выполнение задачи:" v-model="task.runtime" class="form-control mt-1 mb-1 me-1" name="ntask" id="ntask">
+                  <button v-if="!task.edit_runtime" @click="task.edit_runtime=true" class="btn btn-warning mt-1 mb-1"><i class="bi-pen"></i></button>
+                  <button v-if="task.edit_runtime" @click="edit_task(task, 4)" class="btn btn-success mt-1 mb-1">ok</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+      
+          <!-- {{element}} -->
+        </div>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
   </div>
 
@@ -152,11 +252,13 @@
 </template>
 
 <script>
+const url='http://192.168.149.184:3000'
 export default {
 	data() {
 		return {
       task_text: "",
       list_cources: [],
+      list_cources_all: [],
       list_tasks: [],
 			name_cource: "",
 			theme_cource: "",
@@ -172,6 +274,7 @@ export default {
 	},
 	async mounted() {
     await this.getcources()
+    await this.getcourcesall()
 	},
 	methods: {
     async edit_task(task, number) {
@@ -199,7 +302,7 @@ export default {
           break;
       }
 
-      const response = await fetch('http://localhost:3000/task/upd', {
+      const response = await fetch(`${url}/task/upd`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -211,7 +314,7 @@ export default {
 
     },
     async update_cource(element) {
-      const response = await fetch('http://localhost:3000/cource/upd', {
+      const response = await fetch(`${url}/cource/upd`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -233,7 +336,7 @@ export default {
       console.log('start show task method')
       element.show_tasks=true
       element.create_task=false
-      const response = await fetch('http://localhost:3000/task/get', {
+      const response = await fetch(`${url}/task/get`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -269,7 +372,7 @@ export default {
 
 
       console.log(task)
-      const response = await fetch('http://localhost:3000/task/add', {
+      const response = await fetch(`${url}/task/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -303,7 +406,7 @@ export default {
 
     async getcources() {
       const myid={id: 22}
-      const response = await fetch('http://localhost:3000/cource/get', {
+      const response = await fetch(`${url}/cource/get`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -321,6 +424,41 @@ export default {
       this.list_cources = result
     },
 
+    async subscribe_on_cource(cource) {
+      const response = await fetch(`${url}/cource/add_to_user_cart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id: 22,
+          cource_id: cource.id
+        })
+      })
+      
+      // this.cources = await response.json()
+    },
+
+
+
+
+    async getcourcesall() {
+      const response = await fetch(`${url}/cource/getall`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      })
+      // console.log(await response.json())
+      let result = await response.json()
+      console.log('answer: ', result)
+
+      for (let i=0;i<result.length;i++) {
+        result[i].list_tasks=[]
+      }
+      console.log(result)
+      this.list_cources_all = result
+    },
 		async addCource() {
       let formData = new FormData()
       let input = document.querySelector('input[type="file"]')
@@ -338,7 +476,7 @@ export default {
       console.log(22)
       // formData={1:1,2:2}
 
-      const response = await fetch('http://localhost:3000/cource/add', {
+      const response = await fetch(`${url}/cource/add`, {
         method: 'POST',
         body: formData
 

@@ -34,6 +34,73 @@ router.post('/del', async (req, res) => {
 
 	});
 })
+router.post('/getall', urlencodedParser, async (req, res)=>{
+	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+		if (err) {
+			console.log(err)
+		}
+		console.log('connect ok')
+	});
+	let stmt = db.prepare('select * from cources')
+	stmt.all([], (err, rows)=>{
+		if (err) console.log(err)
+		let answer = []
+		// console.log(rows)
+		for (let item of rows) {
+			console.log(item)
+			if (item.imgpath===null) {
+				answer.push({
+					id: item.id,
+					name_cource: item.name,
+					theme_cource: item.theme,
+					description_cource: item.description,
+					lecturer_id: item.lecturer_id,
+					imgpath: 'server/Pictures/e557e870-e841-4263-b55c-86131d8aaf55.jpg',
+
+				})
+			} else {
+				answer.push({
+					id: item.id,
+					name_cource: item.name,
+					theme_cource: item.theme,
+					description_cource: item.description,
+					lecturer_id: item.lecturer_id,
+					imgpath: item.imgpath,
+
+				})
+			}
+		}
+
+
+		res.json(answer)
+	})
+})
+
+router.post('/add_to_user_cart', urlencodedParser, async (req,res)=>{
+	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
+		if(err) console.log(err)
+	})
+	let stmt=db.prepare('insert into users_cources(user_id,cource_id)values(?,?)')
+	stmt.run([req.body.id,req.body.cource_id], (err,rows)=>{
+		console.log(rows)
+		res.json({ok: 200})
+		stmt.finalize()
+	})
+})
+
+router.post('/get_my_cource', urlencodedParser, async (req,res)=>{
+	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
+		if(err) console.log(err)
+	})
+	let stmt=db.prepare('select * from users left join users_cources on users.id=users_cources.user_id left join cources on users_cources.cource_id=cources.id where users.id=?')
+	stmt.all([req.body.id], (err,rows)=>{
+		console.log('rows 1231231', rows)
+		res.json(rows)
+		stmt.finalize()
+	})
+})
+
+
 
 router.post('/get', urlencodedParser, async (req,res) => {
 

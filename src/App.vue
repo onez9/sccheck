@@ -30,7 +30,7 @@ import axios from 'axios'
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
-              <router-link class="nav-link" to="/cources"><i class="bi-person-circle"></i> Курсы</router-link>
+              <router-link class="nav-link" to="/cources"><i class="bi-bag-heart"></i> Курсы</router-link>
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->

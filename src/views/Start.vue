@@ -11,13 +11,15 @@
 
   <h3>Сайт для тестирования навыков программирования</h3>
   <p>Добро пожаловать!<br>Большое количество качественных и бесплатных курсов от настоящих профи</p>
-
-
+  <!-- <div v-for="(cource, index) in cources">
+    <label class="form-control bt-1 be-1 mb-1">{{ cource.name }}</label>
+  </div> -->
+<!-- 
   <div class="d-grid gap-2 col-6 mx-auto">
     <button class="btn btn-primary" type="button">Кнопка</button>
     <button class="btn btn-primary" type="button">Кнопка</button>
   </div>
-
+ -->
 
 </template>
 
@@ -25,36 +27,14 @@
 export default {
   data() {
     return {
+      cources: []
     }
   },
+  async mounted() {
+    // await this.testGet()
+  },
   methods: {
-    async testPost() {
-      // Отправляем запрос типа POST
-      const response = await fetch('/testpost', {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: "Иван"
-        }) 
-      });
 
-      const jsonResult = await response.json();
-
-      console.log(jsonResult);
-    },
-    async testGet() {
-      // Отправляем запрос типа GET
-      const response = await fetch('/testget', {
-        method: 'GET',
-        // 'Access-Control-Allow-Origin': '*'
-      });
-
-      const textResult = await response.text();
-
-      console.log(textResult);
-    }
   }
 }
 </script>

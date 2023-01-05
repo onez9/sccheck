@@ -4,29 +4,10 @@
 <template>
 	<div class="container ">
 		<div class="row">
-			<div class="col-5" >
-				<button v-if="new_mode_user==false" @click="new_mode_user=true ; new_mode_cource=false" class="btn btn-success mt-1 mb-5 me-1">Новый пользователь</button>
-			
-				
-				
-				<div v-if="new_mode_user==true">
-					<h5>Новый пользователь</h5>
-					<label for="firstname">Имя</label>
-					<input v-model="firstname" type="text" class="form-control" id="firstname">
-					<label for="lastname">Фамилия</label>
-					<input v-model="lastname" type="text" class="form-control" id="lastname">
-					<label for="secondname">Отчество</label>
-					<input v-model="secondname" type="text" class="form-control" id="secondname">
-					<label for="email">Email</label>
-					<input v-model="email" type="email" class="form-control" id="email">
-					<label for="pass1">Пароль</label>
-					<input v-model="pass1" type="password" class="form-control" id="pass1">
-					<label for="pass2">Повторите пароль</label>
-					<input v-model="pass2" type="password" class="form-control" id="pass2">
+			<div class="col-8">
+				<div v-for="(user, index) in users" v-bind:key="index">
+					<label class="form-control mb-1 me-1 mt-1">{{user.firstname}} {{user.secondname}} {{user.lastname}}</label>
 				</div>
-				<button v-if="new_mode_user==true" @click="addUser" class="btn btn-success mt-1 mb-5 me-1">Добавить</button>
-				<button v-if="new_mode_user==true" @click="addUserCancel" class="btn btn-success mt-1 mb-5">Отмена</button>
-				
 				
 				
 
@@ -77,60 +58,26 @@
 </template>
 
 <script>
+const url='http://192.168.149.184:3000'
 export default {
-	el: "#raiting",
 	data() {
 		return {
-			firstname: "",
-			lastname: "",
-			secondname: "",
-			email: "",
-			pass1: "",
-			pass2: "",
-			new_mode_user: false,
-
-
-			name_cource: "",
-			theme_cource: "",
-			description_cource: "",
-			
-			new_mode_cource: false
+			users: [],
 		}
 	},
 	computed: {
 
 	},
 	async mounted() {
-
+		await this.getusers()
 	},
 	methods: {
-		async addUserCancel() {
-			this.firstname = ""
-			this.lastname= ""
-			this.secondname= ""
-			this.email= ""
-			this.pass1= ""
-			this.pass2= ""
-			this.new_mode_user=false
-		},
-		async addUser() {
-			const response = await fetch("/newuser", {
+
+		async getusers() {
+			const response = await fetch(`${url}/user`, {
 				method: "POST"
 			})
-
-		},
-		async addCourceCancel() {
-			this.name_cource = ""
-			this.theme_cource = ""
-			this.description_cource = ""
-
-			this.new_mode_cource = false
-		},
-		async addCource() {
-			const response = await fetch("/newuser", {
-				method: "POST"
-			})
-
+			this.users = await response.json()
 		}
 	}
 }

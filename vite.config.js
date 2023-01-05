@@ -20,6 +20,7 @@ import vue from '@vitejs/plugin-vue'
 // import vue from '@vitejs/plugin-vue'
 // // import { crypto } from 'crypto'
 console.log(import.meta.url)
+console.log(fileURLToPath(new URL('./src', import.meta.url)))
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -35,9 +36,9 @@ export default defineConfig({
       input: './src/main.js'
     }
   },
-  devServer: {
-    proxy: {
-      '/': 'http://localhost:3000'
-    }
-  }
+  // server: {
+  //   proxy: {
+  //     '/': 'http://192.168.149.184:5173'
+  //   }
+  // }
 })

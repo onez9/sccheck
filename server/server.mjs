@@ -56,7 +56,7 @@ import registerController from './Controllers/registerController.mjs'
 import registeradminController from './Controllers/registeradminController.mjs'
 import taskController from './Controllers/taskController.mjs'
 import courceController from './Controllers/courceController.mjs'
-
+import userController from './Controllers/userController.mjs'
 
 
 
@@ -66,14 +66,19 @@ app.use('/register', registerController);
 app.use('/register-admin', registeradminController);
 app.use('/cource', courceController);
 app.use('/task', taskController);
+app.use('/user', userController);
 
+
+const ip='192.168.149.184'
+const port=3000
+const url=`http://${ip}:5173`
 app.get('/', (req, res) => {
-	res.redirect("http://localhost:5173/")
+	res.redirect(url)
 
 })
 
 app.get('/reg', (req, res) => {
-	res.redirect("http://localhost:5173/reg")
+	res.redirect(`${url}/reg`)
 
 })
 
@@ -145,7 +150,7 @@ app.post('/adduser', urlencodedParser, function (req,res) {
 
 // настройка приложения
 // app.set('view engine', 'ejs');
-const params = {"port": 3000, "hostname": "localhost"};
+const params = {"port": port, "hostname": ip};
 
 app.use('/public', express.static('public'));
 app.use('/css', express.static('css'));

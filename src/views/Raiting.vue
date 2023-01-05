@@ -34,6 +34,7 @@ import axios from 'axios'
 </template>
 
 <script>
+const url='http://192.168.149.184:3000'
 export default {
   // el: '#elements',
   data() {
@@ -66,7 +67,7 @@ export default {
 
     async test_get() {
 
-      axios.get('http://localhost:3000/get_users').then(resp => {
+      axios.get(`${url}/get_users`).then(resp => {
         console.log(resp.data);
       
       });
