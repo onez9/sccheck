@@ -1,4 +1,5 @@
 <script setup>
+import config from '../config.mjs'
 </script>
 
 <template>
@@ -245,7 +246,7 @@
 
 <script>
 // const url='http://192.168.149.184:3000'
-const url='http://192.168.0.105:3000'
+const url=`http://${config.host}:${config.port}`
 export default {
 	data() {
 		return {
@@ -294,8 +295,10 @@ export default {
 
       const response = await fetch(`${url}/task/upd`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify(json_pack)
       }) 
@@ -314,8 +317,10 @@ export default {
       console.log('this is pack: ', pack)
       const response = await fetch(`${url}/cource/upd`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify(pack)
       })
@@ -331,8 +336,10 @@ export default {
       element.create_task=false
       const response = await fetch(`${url}/task/get`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify({id: element.id})
       }) 
@@ -366,8 +373,10 @@ export default {
       console.log(task)
       const response = await fetch(`${url}/task/add`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify(task)
       })
@@ -401,8 +410,14 @@ export default {
       const myid={id: 22}
       const response = await fetch(`${url}/cource/get`, {
         method: 'POST',
+        credentials: 'include',
+
         headers: {
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'multipart/form-data',
+          'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt')
+
+
         },
         body: JSON.stringify(myid)
       })
@@ -420,8 +435,10 @@ export default {
     async subscribe_on_cource(cource) {
       const response = await fetch(`${url}/cource/add_to_user_cart`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify({
           id: 22,
@@ -438,8 +455,10 @@ export default {
     async getcourcesall() {
       const response = await fetch(`${url}/cource/getall`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt')
         },
       })
       // console.log(await response.json())
@@ -473,6 +492,8 @@ export default {
 
       const response = await fetch(`${url}/cource/add`, {
         method: 'POST',
+
+        credentials: 'include',
         body: formData
 
       })

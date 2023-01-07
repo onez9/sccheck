@@ -2,20 +2,24 @@ import express from 'express';
 import path from 'path';
 // import {main_data, authChecker} from '../models/model.mjs';
 const router = express.Router();
-import DB from '../db.mjs';
+// import DB from '../db.mjs';
 import config from'../config/config.mjs';
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import sqlite3 from 'sqlite3'
 const urlencodedParser = express.urlencoded({extended: false})
-const db = new DB("../curs_summer.db")
 
 router.post('/', urlencodedParser, (req, res) => {
   console.log('start login')
-  db.selectByEmail(req.body.email, (err, user) => {
+  let db = new sqlite3.Database('../curs_summer.db', (err)=>{
+    console.log(err)
+  })
+  db.get(`SELECT * FROM users WHERE email = ?`, [req.body.email], function(err,user) {
+    console.log('вот это у нас юзер: ', user)
     if (err) return res.status(500).send('Ошибка на сервере.');
     
     if (!user) return res.status(404).send('Пользователь не найден.');
-    console.log('user is user is user is user is user: ', req.body.password, user.password)
+    // console.log('user: ', req.body.password, user.password)
 		// проверка пароля пользователя
     let passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
     // если провал шлем это
@@ -23,9 +27,15 @@ router.post('/', urlencodedParser, (req, res) => {
     
 		// иначе отправляем токен
     let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 });
-    
-    res.status(200).send({ auth: true, token: token, user: user });
-  });
+    req.session.token = token
+    req.session.user_id = user.id
+    req.session.email = user.email
+    console.log('token: ', token)
+    console.log('user: херня которую получили из базы данных: ', user)
+    req.session.save()
+    // res.status(200).send({ auth: true, token: token, user: user });
+    res.send({ auth: true, token: token, user: user });
+  })
 })
 
 

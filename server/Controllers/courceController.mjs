@@ -68,7 +68,7 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 		let answer = []
 		// console.log(rows)
 		for (let item of rows) {
-			console.log(item)
+			//console.log(item)
 			if (item.imgpath===null) {
 				answer.push({
 					id: item.id,
@@ -100,6 +100,7 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 })
 
 router.post('/add_to_user_cart', urlencodedParser, async (req,res)=>{
+	
 	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
 		if(err) console.log(err)
 	})
@@ -112,55 +113,68 @@ router.post('/add_to_user_cart', urlencodedParser, async (req,res)=>{
 })
 
 router.post('/get_my_cource', urlencodedParser, async (req,res)=>{
+	console.log('1 когда получаем мои подписки на курсы: ', req.session)
+	req.session.token = 'aaa aa aaa'
+	console.log('2 подписки на курсы: ', req.session)
+	req.session.save()
+	
 	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
 		if(err) console.log(err)
 	})
-	let stmt=db.prepare('select * from users left join users_cources on users.id=users_cources.user_id left join cources on users_cources.cource_id=cources.id left join lecturers on cources.lecturer_id=lecturers.id where users.id=? and users_cources.cource_id not null')
+
+	// получаем список всех курсов пользователя
+	// let stmt=db.prepare(`select * from users 
+	// 	left join users_cources on users.id=users_cources.user_id 
+	// 	left join cources on users_cources.cource_id=cources.id 
+	// 	left join lecturers on cources.lecturer_id=lecturers.id 
+	// 	where users.id=? and users_cources.cource_id not null`)
+
+
+	// получаем список всех курсов пользователя
+	let stmt=db.prepare(`select * from (select user_id, cource_id from users_cources
+		except 
+		select user_id, cource_id from grades) as r1 
+		left join cources on r1.cource_id=cources.id
+		left join users on r1.user_id=users.id
+		where users.id=?;`)
 	stmt.all([req.body.id], (err,rows)=>{
-		console.log('rows 1231231', rows)
+		// console.log('rows 1231231', rows)
 		res.json(rows)
 		stmt.finalize()
+		// req.session.save()
 	})
 })
 
-
-
 router.post('/get', urlencodedParser, async (req,res) => {
-
 	let db = new sqlite3.Database('../curs_summer.db', (err) => {
-		if (err) {
-			console.log(err)
-		}
-		console.log('connect ok')
-	});
-	db.serialize(() => {
-		const stmt = db.prepare('select * from cources where lecturer_id=?')
-		
-		stmt.all([req.body.id], (err, rows) => {
-			if (err) console.log(err)
-			let answer = []
-			// console.log(rows)
-			for (let item of rows) {
-				console.log(item)
-				answer.push({
-					id: item.id,
-					name_cource: item.name,
-					theme_cource: item.theme,
-					description_cource: item.description,
-					runtime_cource: item.runtime,
-					lecturer_id: item.lecturer_id,
-					imgpath: item.imgpath,
-
-				})
-			}
-
-
-			res.json(answer)
-		})
-		console.log(stmt)
-
+		if (err) console.log(err)
 	});
 	
+	let stmt = db.prepare('select * from cources where lecturer_id=?')
+	stmt.all([req.session.user_id], async (err, rows) => {
+		if (err) console.log(err)
+
+		let answer = []
+		// console.log(rows)
+		for (let item of rows) {
+			//console.log(item)
+			answer.push({
+				id: item.id,
+				name_cource: item.name,
+				theme_cource: item.theme,
+				description_cource: item.description,
+				runtime_cource: item.runtime,
+				lecturer_id: item.lecturer_id,
+				imgpath: item.imgpath,
+
+			})
+		}
+		return res.json({123:123})
+		
+
+	});
+
+
 
 })
 

@@ -1,5 +1,6 @@
 <script setup>
 import axios from 'axios'
+import config from '../config.mjs'
 </script>
 
 <template>
@@ -35,7 +36,7 @@ import axios from 'axios'
 
 <script>
 // const url='http://192.168.149.184:3000'
-const url='http://192.168.0.105:3000'
+const url=`http://${config.host}:${config.port}`
 export default {
   // el: '#elements',
   data() {
@@ -60,6 +61,7 @@ export default {
       // alert(this.elements.indexOf(element))
       const response = await fetch(`${url}/get_users`, {
         method: 'GET',
+        
       })
       this.partitens = await response.json();
       console.log(this.partitens)

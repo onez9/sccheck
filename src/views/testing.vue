@@ -1,4 +1,5 @@
 <script setup>
+import config from '../config.mjs'
 </script>
 
 <template>
@@ -15,6 +16,17 @@
               <button @click="run_the_cource(cource)" class="btn btn-warning mt-1 mb-1">Пройти</button>
               <button @click="delete_the_cource(cource)" class="btn btn-danger mt-1 mb-1 me-1"><i class="bi-x-square"></i></button>
             </div>
+          </div>
+        </div>
+        <h5>Мои пройденные курсы:</h5>
+        <div v-for="(cource, key) in end_cources" :key="key">
+          <!-- console.log(cource) -->
+
+          <div class="border border-primary rounded p-1 mb-1">
+            <label class="">Название курса: {{cource.name}}</label><br>
+            <label class="">Время на выполнение: {{cource.runtime}}</label><br>
+            <label class="">Оценка выполнения: {{cource.grade}}%</label><br>
+            <button class="btn btn-warning"><i class="bi-x-square"></i></button>
           </div>
         </div>
 
@@ -58,7 +70,7 @@
           <button v-if="show_start_test_mode" @click="send_data" class="btn btn-danger"><i class="bi-send"></i>Завершить выполнение</button>
           
         </div>
-        <label v-if="show_grade" class="form-control">Ваша оценка за тест (Приемлемо 80%):{{grade.grade}}, {{tasks.length}} {{grade.grade / tasks.length * 100}}%</label>
+        <label v-if="show_grade" class="form-control">Ваша оценка за тест (Приемлемо 80%):{{grade.grade}}%</label>
         <!-- <textarea v-model="code_input" class="form-control mt-1" name="code_input" id="code_input" rows="10"></textarea>
         <textarea class="form-control mt-1 mb-1" name="code_input" id="code_input" rows="10" disabled>{{code_input}}</textarea>
         <div class="d-flex">
@@ -74,7 +86,7 @@
 
 <script>
 // const url='http://192.168.149.184:3000'
-const url='http://192.168.0.105:3000'
+const url=`http://${config.host}:${config.port}`
 export default {
 	data() {
 		return {
@@ -87,7 +99,8 @@ export default {
       show_task_test_mode: false,
       answers: [],
       grade: 0,
-      show_grade: false
+      show_grade: false,
+      end_cources: [],
 		}
 	},
 	computed: {
@@ -95,10 +108,24 @@ export default {
 	},
 	async mounted() {
     await this.testGet() // делает сложный sql запрос с left join-ми
-    // await this.test()
+    await this.get_my_ended_cource()
 	},
 	methods: {
+    async get_my_ended_cource() {
+      const response = await fetch(`${url}/answer/get_my_ended_cources`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: 22
+        })
 
+      })
+
+      this.end_cources=await response.json()
+    },
     async start_test() {
       this.show_start_test_mode=true
 
@@ -118,8 +145,10 @@ export default {
       }
       const response = await fetch(`${url}/answer/add`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify({
           cource_id: this.activeItem.cource_id,
@@ -129,14 +158,18 @@ export default {
       })
 
       
-      
+      await this.get_my_ended_cource()
       this.grade = await response.json()
       // console.log(this.cources)
 
     },
     async getcources() {
       const response = await fetch(`${url}/cource/getall`, {
-        method: 'POST'
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+
+        }
       })
       
       this.cources = await response.json()
@@ -147,8 +180,10 @@ export default {
       const myid = 22
       const response = await fetch(`${url}/cource/get_my_cource`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+
         },
         body: JSON.stringify({
           id: myid
@@ -167,7 +202,8 @@ export default {
       const response = await fetch(`${url}/task/get_task_cource`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          credentials: 'include'
         },
         body: JSON.stringify({
           cource_id: cource.cource_id
@@ -182,7 +218,8 @@ export default {
       const response = await fetch(`${url}/cource/del`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          credentials: 'include'
         },
         body: JSON.stringify({
           user_id: cource.user_id,

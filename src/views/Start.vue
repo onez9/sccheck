@@ -1,5 +1,5 @@
 <script setup>
-
+import config from '../config.mjs'
 
 </script>
 
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {

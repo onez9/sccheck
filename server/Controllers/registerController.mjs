@@ -5,7 +5,7 @@ const router = express.Router();
 import DB from '../db.mjs';
 import config from'../config/config.mjs';
 import bcrypt from 'bcrypt'
-const db = new DB("../curs_summer.db")
+import sqlite3 from 'sqlite3'
 import jwt from 'jsonwebtoken'
 const urlencodedParser = express.urlencoded({extended: false})
 
@@ -14,28 +14,41 @@ router.post('/', urlencodedParser, function(req, res) {
   console.log(req.body)
   const user_pack = [
     req.body.firstname, 
-    req.body.lastname, 
     req.body.secondname, 
+    req.body.lastname, 
     req.body.email, 
     req.body.group, 
     bcrypt.hashSync(req.body.password1, 8)
   ]
 
-  db.insert(user_pack, function (err) {
-		if (err) return res.status(500).send(err)
-		
-		db.selectByEmail(req.body.email, (err, user) => {
-			if (err) return res.status(500).send(err)
+
+  const db = new sqlite3.Database('../curs_summer.db', (err)=>{
+    console.log(err)
+  })
+  
+  let stmt = db.prepare("INSERT INTO users (firstname, secondname, lastname, email, 'group', password) VALUES (?,?,?,?,?,?)")
+  stmt.run(user_pack, (err) => {
+    if (err) return res.status(500).send(err)
+    // stmt.finalize()
+  })
+  stmt = db.prepare(`SELECT * FROM users WHERE email = ?`)
+
+  stmt.get([req.body.email], function(err,rows) {
+    console.log(rows)
+    if (err) return res.status(500).send(err)
 			
-			let token = jwt.sign({ id: user.id }, config.secret, { expiresIn: 86400 });
-	
-			res.status(200).send({ auth: true, token: token, user: user });
+    let token = jwt.sign({ id: rows.id }, config.secret, { expiresIn: 86400 });
+    req.session.token=token
+    res.status(200).send({ 
+      auth: true, 
+      token: token, 
+      user: rows
+    });
+    stmt.finalize()
 
-		}); 
 
+  })
 
-
-  }); 
 });
 
 

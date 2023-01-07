@@ -5,7 +5,7 @@ import MyCourcesView from '../views/testing.vue'
 import StartView from '../views/Start.vue'
 import RegView from '../views/Reg.vue'
 // import RegPrepView from '../views/RegPrep.vue'
-import AuthView from '../views/Auth.vue'
+import LoginView from '../views/Login.vue'
 import RaitingView from '../views/Raiting.vue'
 
 const router = createRouter({
@@ -44,9 +44,9 @@ const router = createRouter({
       }
     },
     {
-      path: '/auth',
-      name: 'auth',
-      component: AuthView,
+      path: '/login',
+      name: 'login',
+      component: LoginView,
       meta: { 
         guest: true
       }
@@ -72,43 +72,55 @@ const router = createRouter({
 
 
 
-/*
+
 // Глобальные навигационные хуки вызываются в порядке их создания при каждом навигационном переходе.
 router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-    if (localStorage.getItem('jwt') == null) {
+  console.log('to: ',to.matched)
+  console.log('from: ',from)
+  console.log('next: ',next)
+  console.log('это localStorage: ', localStorage)
+  let res = to.matched.some(record => {
+    console.log('какое-то рекорд: ', record)
+    console.log('это тру или фолсу: ', record.meta.requiresAuth)
+    return record.meta.requiresAuth
+  })
+  if(res) { // есить ли те у кого требуется права админа т.е. такие маршруты есть для которых требуется авторризация
+    if (localStorage.getItem('jwt') == null) { // если jwt равен нуля или undefined - на логин панель
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
       })
     } else {
-      let user = JSON.parse(localStorage.getItem('user'))
-      if(to.matched.some(record => record.meta.is_admin)) {
-        if(user.is_admin == 1){
-          alert('ok 222')
-          next()
-        }
-        else{
-          alert(4333)
-          next({ name: 'start'})
-        }
-      }else {
-        next()
-      }
+      console.log('get localStorage: ', localStorage.getItem('user'))
+      let user = localStorage.getItem('user')
+      // let user = JSON.parse(localStorage.getItem('user'))
+      console.log('это user: ', user) // тут мы авторизовались
+      // if(to.matched.some(record => record.meta.is_admin)) { // есть ли маршруты, к которым имеют доступ только админы?
+      //   if(user.is_admin == 1){ // у нас таких маршрутов нет, поэтому  переходим к части else - "мы обычный пользователь"
+      //     alert('мы здесь боги')
+      //     next()
+      //   } else {
+      //     alert('мы здесь не админы')
+      //     next({ name: 'start'})
+      //   }
+      // } else {
+      console.log('мы обычный пользователь')
+      next()
+      // }
     }
-  } else if(to.matched.some(record => record.meta.guest)) {
-    if(localStorage.getItem('jwt') == null){
-      alert('ok')
+  } else if (to.matched.some(record => record.meta.guest)) { // есть ли маршруты для которых нужен доступ гостя
+    if(localStorage.getItem('jwt') == null){ // jwt token == null
+      alert('ok jwt == null - маршрут требует права гостя')
       next()
     }
-    else{
+    else{ // jwt есть - авторизации нет
       next({ name: 'start'})
     }
-  }else {
-    alert('ok')
+  } else { // нет авторизации
+    alert('ok нет авторизции')
     next() 
   }
 })
-*/
+
 
 export default router

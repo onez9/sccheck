@@ -1,7 +1,6 @@
 //process.chdir(__dirname);
 // console.log(__dirname)
 import express from 'express'
-
 import cookieParser from 'cookie-parser'
 // import session from 'express-session'
 // import csrf from 'csurf'
@@ -13,12 +12,12 @@ import sqlite3 from 'sqlite3'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import bodyParser from 'body-parser'
-
-
+import session from 'express-session';
+import cors from 'cors'
+import crypto from 'crypto'
 
 // import Record from '../models/Record';
 import DB from './db.mjs'
-import config from './config/config.mjs'
 
 // const db1 = new DB("../curs_summer.db")
 const app = express()
@@ -31,6 +30,7 @@ const app = express()
 // const urlencodedParser = express.urlencoded({extended: false})
 // app.use(urlencodedParser)
 
+// настройка приложения
 app.use(express.json());
 // // app.use(cookieParser('secret key'));
 app.use(fileUpload({    
@@ -38,15 +38,19 @@ app.use(fileUpload({
 	tempFileDir : 'Pictures/'
 }));
 
+
+
+
 // CORS middleware
 const allowCrossDomain = function(req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
+	// console.log('middleware token that: ', req.session.token)
+	
+	// res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Methods', '*');
 	res.header('Access-Control-Allow-Headers', '*');
 	next();
 }
 app.use(allowCrossDomain) // позволяем запросы с разных сайтов
-
 
 
 
@@ -58,6 +62,91 @@ import taskController from './Controllers/taskController.mjs'
 import courceController from './Controllers/courceController.mjs'
 import userController from './Controllers/userController.mjs'
 import answerController from './Controllers/answerController.mjs'
+import config from './config/config.mjs'
+
+
+
+const corsOptions = {
+	origin: 'http://localhost:5173',  //Your Client, do not write '*'
+	credentials: true,
+};
+app.use(cors(corsOptions));
+
+
+app.use(cookieParser());
+app.set('trust proxy', 1)
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+	secret: 'keyboard cat',
+	// name: '123',
+	// secret: "anyrandomstring",
+	// cookie: {
+  //   maxAge:269999999999
+  // },
+	cookie: { 
+		secure: false,
+		// originalMaxAge: 3600,
+		// path: '/'
+	}
+}))
+
+// app.use((req, res, next) => {
+//   if (req.headers.authorization) {
+//     let tokenParts = req.headers.authorization.split('.')
+//     let signature = crypto.createHmac('SHA256', config.secret).update(`${tokenParts[0]}.${tokenParts[1]}`).digest('base64')
+// 		console.log('signature: ', signature)
+// 		console.log('tokenParts[0]: ', tokenParts[0])
+// 		console.log('tokenParts[1]: ', tokenParts[1])
+//     if (signature === tokenParts[2]) {
+			
+//       req.user = JSON.parse(Buffer.from(tokenParts[1], 'base64').toString('utf8'))
+// 			console.log('middleware.................', req.user)
+// 		} else {
+// 			console.log('ничего не произошло!')
+// 		}
+// 		console.log('у нас тут много секса!')
+//     next()
+//   } else {
+// 		console.log('опять ничего не произошло')
+// 		// res.redirect(300, 'http://localhost:5173/login')
+// 		next()
+// 	} 
+
+//   // next()
+// })
+
+// app.use(express.json())
+app.use((req, res, next) => {
+	console.log('headers request: ', req.headers)
+  if (req.headers.authorization) {
+    jwt.verify(req.headers.authorization, config.secret, (err, payload) => {
+				// console.log('this is payload blad suka tupaya: ', payload)
+			if (err) {
+				// console.log(err)
+				next()
+				// res.send(500)
+			} else if (payload) {
+				// console.log('бляяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя ааааа')
+				if (req.session.user_id === payload.id) {
+					req.user = req.session.email
+					console.log('Все прошло успешно!!!!!!!!!!!!!!')
+					next()
+				}
+				// res.send(200)
+				if (!req.user) next()
+			}
+
+
+    })
+  }
+
+  next()
+})
+
+
+
+
 
 
 app.use('/login', loginController);
@@ -70,18 +159,21 @@ app.use('/user', userController);
 app.use('/answer', answerController);
 
 
-const ip='192.168.0.105'
-const port=3000
-const url=`http://${ip}:5173`
-app.get('/', (req, res) => {
-	res.redirect(url)
 
-})
+// const ip='192.168.0.105'
+// const port=3000
+// const url=`http://${ip}:5173`
 
-app.get('/reg', (req, res) => {
-	res.redirect(`${url}/reg`)
 
-})
+// app.get('/', (req, res) => {
+// 	res.redirect(url)
+
+// })
+
+// app.get('/reg', (req, res) => {
+// 	res.redirect(`${url}/reg`)
+
+// })
 
 /*
 	db.serialize(() => {
@@ -151,7 +243,7 @@ app.post('/adduser', urlencodedParser, function (req,res) {
 
 // настройка приложения
 // app.set('view engine', 'ejs');
-const params = {"port": port, "hostname": ip};
+
 
 app.use('/public', express.static('public'));
 app.use('/css', express.static('css'));
@@ -162,8 +254,8 @@ console.log("Server is started...")
 
 //import arr_upload = upload.fields([{ name: 'file', maxCount: 10 }]);
 // запуск приложения
-app.listen(params.port, params.hostname, () => {
-	console.log(`Сервер запущен - http://${params.hostname}:${params.port}/`);
+app.listen(config.port, config.host, () => {
+	console.log(`Сервер запущен - http://${config.host}:${config.port}/`);
 	console.log('Остановить сервер - Ctrl+C');
 
 });

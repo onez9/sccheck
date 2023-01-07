@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import axios from 'axios'
+import config from './config.mjs'
 </script>
 
 <template class="d-flex flex-column min-vh-100">
@@ -70,10 +71,10 @@ import axios from 'axios'
               {{ my_name }}
             </span>
             <div v-if="my_name!=''"> 
-              <router-link @click="logout" class="nav-link" to="/auth"><i class="bi-box-arrow-in-right"></i> Выйти</router-link>
+              <router-link @click="logout" class="nav-link" to="/login"><i class="bi-box-arrow-in-right"></i> Выйти</router-link>
             </div>
             <div v-else> 
-              <router-link @click="logout" class="nav-link" to="/auth"><i class="bi-box-arrow-in-right"></i> Войти</router-link>
+              <router-link @click="logout" class="nav-link" to="/login"><i class="bi-box-arrow-in-right"></i> Выйти</router-link>
             </div>
           </div>
         </div>
@@ -143,7 +144,7 @@ import axios from 'axios'
 // app.component('component-b', {})
 // app.component('component-c', {})
 // app.mount('#app')
-
+console.log(config.host)
 
 export default {
   data() {
@@ -161,7 +162,9 @@ export default {
   async mounted() {
   },
   methods: {
-
+    async logout() {
+      window.localStorage.clear()
+    }
   }
 }
 

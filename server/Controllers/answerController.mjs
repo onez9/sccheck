@@ -5,6 +5,20 @@ const db_path = "../curs_summer.db"
 const urlencodedParser = express.urlencoded({extended: true})
 
 
+
+
+router.post('/get_my_ended_cources', urlencodedParser, (req,res)=>{
+  let db = new sqlite3.Database(db_path, (err) => {
+    if(err) console.log(err)
+  })
+  let stmt = db.prepare('select * from grades left join cources on grades.cource_id=cources.id where user_id=?')
+  stmt.all([req.body.user_id], (err, rows)=>{
+    console.log(rows.length)
+    stmt.finalize()
+    res.json(rows)
+  })
+})
+
 router.post('/add', urlencodedParser, (req,res)=>{
   console.log('hello from answer/add: ', req.body)
   let answers = req.body.answers
@@ -31,13 +45,14 @@ router.post('/add', urlencodedParser, (req,res)=>{
     })
   }
 
+  let grade = (sum_point / req.body.answers.length)*100
   stmt = db.prepare('insert into grades (user_id,cource_id,grade) values (?,?,?)')
-  stmt.run([user_id, cource_id, sum_point], (err)=>{
+  stmt.run([user_id, cource_id, grade], (err)=>{
     console.log(err)
 
   })
   stmt.finalize()
-  res.json({grade: sum_point})
+  res.json({grade: grade})
 
 })
 
