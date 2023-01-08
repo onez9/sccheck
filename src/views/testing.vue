@@ -5,7 +5,7 @@ import config from '../config.mjs'
 <template>
 	<div class="container ">
 		<div class="row">
-			<div v-if="!show_start_test_mode" class="col-5" >
+			<div v-if="!show_start_test_mode" class="col-sm-5" >
         <h5>Мои курсы:</h5>
         <div v-for="(cource, key) in cources" :key="key">
           <div class="d-flex">
@@ -41,7 +41,7 @@ import config from '../config.mjs'
         
       </div> -->
 
-      <div class="col-7" v-if="show_task_test_mode">
+      <div class="col-sm-7" v-if="show_task_test_mode">
         <h5>Список задач для прохождения:</h5>
         <div class="input-group">
           <!-- {{activeItem}} -->
@@ -101,30 +101,32 @@ export default {
       grade: 0,
       show_grade: false,
       end_cources: [],
+      my_name: "",
 		}
 	},
 	computed: {
 
 	},
 	async mounted() {
-    await this.testGet() // делает сложный sql запрос с left join-ми
-    await this.get_my_ended_cource()
+    await this.show_my_subscribe_cources() // делает сложный sql запрос с left join-ми
+    await this.get_my_finish_cources()
+    this.my_name = window.localStorage.getItem('user')
+    // await this.show_my_subscribe_cources()
 	},
 	methods: {
-    async get_my_ended_cource() {
+    async get_my_finish_cources() {
       const response = await fetch(`${url}/answer/get_my_ended_cources`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt'),
         },
-        body: JSON.stringify({
-          user_id: 22
-        })
 
       })
 
       this.end_cources=await response.json()
+      await this.show_my_subscribe_cources()
     },
     async start_test() {
       this.show_start_test_mode=true
@@ -148,6 +150,7 @@ export default {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt')
 
         },
         body: JSON.stringify({
@@ -158,36 +161,22 @@ export default {
       })
 
       
-      await this.get_my_ended_cource()
+      await this.get_my_finish_cources()
       this.grade = await response.json()
       // console.log(this.cources)
 
     },
-    async getcources() {
-      const response = await fetch(`${url}/cource/getall`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
 
-        }
-      })
-      
-      this.cources = await response.json()
-      console.log(this.cources)
-    },
-    async testGet() {
+    async show_my_subscribe_cources() { // показывает мои курсы с except
       // Отправляем запрос типа GET
-      const myid = 22
-      const response = await fetch(`${url}/cource/get_my_cource`, {
+      const response = await fetch(`${url}/cource/get_my_subscribe_cource`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt'),
 
         },
-        body: JSON.stringify({
-          id: myid
-        })
         // 'Access-Control-Allow-Origin': '*'
       });
 

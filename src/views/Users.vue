@@ -5,7 +5,7 @@ import config from '../config.mjs'
 <template>
 	<div class="container ">
 		<div class="row">
-			<div class="col-8">
+			<div class="col-sm-8">
 				<div v-for="(user, index) in users" v-bind:key="index">
 					<label class="form-control mb-1 me-1 mt-1">{{user.firstname}} {{user.secondname}} {{user.lastname}}</label>
 				</div>
@@ -65,6 +65,7 @@ export default {
 	data() {
 		return {
 			users: [],
+			my_name: "",
 		}
 	},
 	computed: {
@@ -72,6 +73,7 @@ export default {
 	},
 	async mounted() {
 		await this.getusers()
+		this.my_name = window.localStorage.getItem('user')
 	},
 	methods: {
 

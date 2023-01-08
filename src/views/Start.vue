@@ -28,11 +28,13 @@ const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {
-      cources: []
+      cources: [],
+      my_name: "",
     }
   },
   async mounted() {
     // await this.testGet()
+    this.my_name = window.localStorage.getItem('user')
   },
   methods: {
 

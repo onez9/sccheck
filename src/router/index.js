@@ -110,14 +110,14 @@ router.beforeEach((to, from, next) => {
     }
   } else if (to.matched.some(record => record.meta.guest)) { // есть ли маршруты для которых нужен доступ гостя
     if(localStorage.getItem('jwt') == null){ // jwt token == null
-      alert('ok jwt == null - маршрут требует права гостя')
+      // alert('ok jwt == null - маршрут требует права гостя')
       next()
     }
-    else{ // jwt есть - авторизации нет
-      next({ name: 'start'})
+    else{ // jwt есть
+      next()
     }
   } else { // нет авторизации
-    alert('ok нет авторизции')
+    // alert('ok нет авторизции')
     next() 
   }
 })

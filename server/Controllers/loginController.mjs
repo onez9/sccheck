@@ -15,7 +15,7 @@ router.post('/', urlencodedParser, (req, res) => {
     console.log(err)
   })
   db.get(`SELECT * FROM users WHERE email = ?`, [req.body.email], function(err,user) {
-    console.log('вот это у нас юзер: ', user)
+    // console.log('вот это у нас юзер: ', user)
     if (err) return res.status(500).send('Ошибка на сервере.');
     
     if (!user) return res.status(404).send('Пользователь не найден.');
@@ -35,6 +35,7 @@ router.post('/', urlencodedParser, (req, res) => {
     req.session.save()
     // res.status(200).send({ auth: true, token: token, user: user });
     res.send({ auth: true, token: token, user: user });
+    // res.redirect('http://localhost:5173/')
   })
 })
 

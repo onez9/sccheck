@@ -11,14 +11,17 @@ router.post('/get_my_ended_cources', urlencodedParser, (req,res)=>{
   let db = new sqlite3.Database(db_path, (err) => {
     if(err) console.log(err)
   })
-  let stmt = db.prepare('select * from grades left join cources on grades.cource_id=cources.id where user_id=?')
-  stmt.all([req.body.user_id], (err, rows)=>{
+  let stmt = db.prepare(`select * from (select id as gid,user_id as uid,cource_id,grade from grades) as t1
+  left join cources on cources.id=t1.cource_id 
+  where uid=?`)
+  stmt.all([req.session.user_id], (err, rows)=>{
     console.log(rows.length)
     stmt.finalize()
     res.json(rows)
   })
 })
 
+// /answer/add - добавление ответов - тип мы прошли уже
 router.post('/add', urlencodedParser, (req,res)=>{
   console.log('hello from answer/add: ', req.body)
   let answers = req.body.answers
@@ -31,7 +34,7 @@ router.post('/add', urlencodedParser, (req,res)=>{
   let stmt = db.prepare('insert into answers (task_id,user_id,answer) values (?,?,?)')
 
   // item.user_id необязательно передавать это, ведь мы уже вошли в систему как пользователь, стало быть нам изестно кто мы
-  let user_id=22
+  let user_id=req.session.user_id
   let cource_id=req.body.cource_id
   console.log(cource_id, ' это коурс id.')
   for (let item of answers) {

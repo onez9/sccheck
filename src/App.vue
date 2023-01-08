@@ -67,13 +67,12 @@ import config from './config.mjs'
               <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> 
               <router-link class="nav-link" to="/auth"><i class="bi-box-arrow-in-left"></i> Войти</router-link>
             </div> -->
-            <span class="navbar-text">
-              {{ my_name }}
-            </span>
-            <div v-if="my_name!=''"> 
-              <router-link @click="logout" class="nav-link" to="/login"><i class="bi-box-arrow-in-right"></i> Выйти</router-link>
+            <div class="me-2">
+              <span class="navbar-text">
+                {{ my_name }}
+              </span>
             </div>
-            <div v-else> 
+            <div v-if="my_name" >
               <router-link @click="logout" class="nav-link" to="/login"><i class="bi-box-arrow-in-right"></i> Выйти</router-link>
             </div>
           </div>
@@ -107,28 +106,8 @@ import config from './config.mjs'
         </div>
 
 
-
-        <!-- <div class="col-md-5 offset-md-1 mb-3">
-          <form>
-            <h5>Подпишитесь на рассылку писем введя туда свой email</h5>
-            <div class="d-flex flex-column flex-sm-row w-100 gap-2">
-              <label for="newsletter1" class="visually-hidden">Адрес электронной почты</label>
-              <input id="newsletter1" type="text" class="form-control" placeholder="Email address">
-              <button class="btn btn-primary" type="button">Subscribe</button>
-            </div>
-          </form> 
-        
-        </div> -->
       </div>
   
-      <!-- <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top">
-        <p>&copy; 2022 Company, Inc. All rights reserved.</p>
-        <ul class="list-unstyled d-flex">
-          <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"/></svg></a></li>
-          <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"/></svg></a></li>
-          <li class="ms-3"><a class="link-dark" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"/></svg></a></li>
-        </ul>
-      </div> -->
     </div>
   </footer>
 
@@ -160,10 +139,15 @@ export default {
     }
   },
   async mounted() {
+    this.my_name = window.localStorage.getItem('user')
   },
   methods: {
     async logout() {
+      this.my_name=""
       window.localStorage.clear()
+    },
+    async login() {
+      this.my_name = window.localStorage.getItem('user')
     }
   }
 }

@@ -35,8 +35,8 @@ router.post('/del', async (req, res) => {
 
 	});
 
-	let stmt = db.prepare('delete from users_cources where cource_id=?')
-	stmt.run([req.body.cource_id], (err, rows)=>{
+	let stmt = db.prepare('delete from users_cources where cource_id=? and user_id=?')
+	stmt.run([req.body.cource_id, req.session.user_id], (err, rows)=>{
 		if (err) console.log(err)
 		// let answer = []
 		// stmt.finalize()
@@ -53,7 +53,7 @@ router.post('/del', async (req, res) => {
 
 })
 
-
+// возврат всех всех курсов
 router.post('/getall', urlencodedParser, async (req, res)=>{
 	let db = new sqlite3.Database('../curs_summer.db', (err) => {
 		if (err) {
@@ -61,7 +61,7 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 		}
 		console.log('connect ok')
 	});
-	let stmt = db.prepare('select * from cources')
+	let stmt = db.prepare(`select cources.*, users.email from cources left join users on cources.user_id=users.id`)
 	stmt.all([], (err, rows)=>{
 		
 		if (err) console.log(err)
@@ -76,7 +76,8 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 					theme_cource: item.theme,
 					description_cource: item.description,
 					runtime_cource: item.runtime,
-					lecturer_id: item.lecturer_id,
+					user_id: item.user_id,
+					author: item.email,
 					imgpath: 'server/Pictures/e557e870-e841-4263-b55c-86131d8aaf55.jpg',
 
 				})
@@ -87,70 +88,66 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 					theme_cource: item.theme,
 					description_cource: item.description,
 					runtime_cource: item.runtime,
-					lecturer_id: item.lecturer_id,
+					user_id: item.user_id,
+					author_cource: item.email,
 					imgpath: item.imgpath,
 
 				})
 			}
 		}
 
-
-		res.json(answer)
+		console.log('own cources: ', answer)
+		res.status(200).json(answer)
 	})
 })
 
-router.post('/add_to_user_cart', urlencodedParser, async (req,res)=>{
+router.post('/add_subscribe_on_cource', urlencodedParser, async (req,res)=>{
 	
 	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
 		if(err) console.log(err)
 	})
+
 	let stmt=db.prepare('insert into users_cources(user_id,cource_id)values(?,?)')
-	stmt.run([req.body.id,req.body.cource_id], (err,rows)=>{
+	stmt.run([req.session.user_id,req.body.cource_id], (err,rows)=>{
 		console.log(rows)
 		res.json({ok: 200})
 		stmt.finalize()
 	})
 })
 
-router.post('/get_my_cource', urlencodedParser, async (req,res)=>{
+router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
 	console.log('1 когда получаем мои подписки на курсы: ', req.session)
-	req.session.token = 'aaa aa aaa'
+	// req.session.token = 'aaa aa aaa'
 	console.log('2 подписки на курсы: ', req.session)
-	req.session.save()
+	// req.session.save()
 	
 	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
 		if(err) console.log(err)
 	})
 
-	// получаем список всех курсов пользователя
-	// let stmt=db.prepare(`select * from users 
-	// 	left join users_cources on users.id=users_cources.user_id 
-	// 	left join cources on users_cources.cource_id=cources.id 
-	// 	left join lecturers on cources.lecturer_id=lecturers.id 
-	// 	where users.id=? and users_cources.cource_id not null`)
-
-
-	// получаем список всех курсов пользователя
-	let stmt=db.prepare(`select * from (select user_id, cource_id from users_cources
+	// получаем список всех курсов пользователя которые он не прошёл
+	let stmt=db.prepare(`select * from (select user_id as uid, cource_id from users_cources
 		except 
-		select user_id, cource_id from grades) as r1 
+		select user_id as uid, cource_id from grades) as r1
 		left join cources on r1.cource_id=cources.id
-		left join users on r1.user_id=users.id
+		left join users on r1.uid=users.id
 		where users.id=?;`)
-	stmt.all([req.body.id], (err,rows)=>{
+	stmt.all([req.session.user_id], (err,rows)=>{
 		// console.log('rows 1231231', rows)
-		res.json(rows)
+		res.json(rows) // ошибка была в том что у нас 2 раза выполнялось то что не должно выполняться
 		stmt.finalize()
 		// req.session.save()
 	})
 })
 
-router.post('/get', urlencodedParser, async (req,res) => {
+
+// получение пользоваателем только тех которые он создал
+router.post('/get_own_cource', urlencodedParser, async (req,res) => {
 	let db = new sqlite3.Database('../curs_summer.db', (err) => {
 		if (err) console.log(err)
 	});
 	
-	let stmt = db.prepare('select * from cources where lecturer_id=?')
+	let stmt = db.prepare(`select * from cources where cources.user_id=?`)
 	stmt.all([req.session.user_id], async (err, rows) => {
 		if (err) console.log(err)
 
@@ -164,27 +161,32 @@ router.post('/get', urlencodedParser, async (req,res) => {
 				theme_cource: item.theme,
 				description_cource: item.description,
 				runtime_cource: item.runtime,
-				lecturer_id: item.lecturer_id,
+				user_id: item.user_id,
 				imgpath: item.imgpath,
 
 			})
 		}
-		return res.json({123:123})
+		console.log('user_id: ', req.session.user_id)
+		// console.log('user_id: ', req.session.user_id)
+		console.log('answer can be tthis place: ', answer)
 		
-
+		res.status(200).json(answer)
 	});
-
+	// console.log('anime 123 123 123', ccc.all())
+	
 
 
 })
 
-router.post('/add', urlencodedParser, async (req, res) => {
+router.post('/create', urlencodedParser, async (req, res) => {
 	console.log(req.body)
 	
 	
 	let name = req.body.name
 	let theme = req.body.theme
 	let description = req.body.description
+	// let email = req.body.email
+	let runtime = req.body.runtime
 	let imgpath
 
 	try {
@@ -197,8 +199,7 @@ router.post('/add', urlencodedParser, async (req, res) => {
 		imgpath = undefined
 		console.log(imgpath)
 	}
-	let lecturer_id = req.body.lecturer_id
-	let runtime = req.body.runtime
+
 	// req.files.file.mv(imgpath);
 	console.log(req.files?.file)
 
@@ -211,16 +212,18 @@ router.post('/add', urlencodedParser, async (req, res) => {
 		console.log('connect ok')
 	});
 
+	//вставили новый курс
 	db.serialize(() => {
-		const stmt = db.prepare(`insert into cources(name,theme,description,runtime,imgpath,lecturer_id) values (?,?,?,?,?,?)`)
-		stmt.run(name,theme,description,runtime,imgpath,lecturer_id)
+		// тут просто создается курс с указанием - кто его создал
+		let stmt = db.prepare(`insert into cources(name,theme,description,runtime,imgpath,user_id) values (?,?,?,?,?,?)`)
+		stmt.run(name,theme,description,runtime,imgpath,req.session.user_id)
 		stmt.finalize();
-
 	});
 	
+	// вернули все курсы для конкретного польлзователя
 	db.serialize(() => {
-		const stmt = db.prepare('select * from cources where lecturer_id=?')
-		stmt.all([req.body.lecturer_id], (err, rows) => {
+		const stmt = db.prepare('select * from cources where user_id=?')
+		stmt.all([req.body.user_id], (err, rows) => {
 			if (err) console.log(err)
 
 			//console.log(rows)
@@ -235,7 +238,7 @@ router.post('/add', urlencodedParser, async (req, res) => {
 					theme_cource: item.theme,
 					description_cource: item.description,
 					runtime_cource: item.runtime,
-					lecturer_id: item.lecturer_id,
+					user_id: item.user_id,
 					imgpath: item.imgpath,
 
 				})

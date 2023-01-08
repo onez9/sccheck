@@ -80,7 +80,11 @@ export default {
       password: "",
       pass1: "",
       pass2: "",
+      my_name: "",
     }
+  },
+  async mounted() {
+    this.my_name = window.localStorage.getItem('user')
   },
   methods: {
 

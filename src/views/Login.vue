@@ -39,7 +39,11 @@ export default {
     return {
       login: "",
       password: "",
+      my_name: "",
     }
+  },
+  async mounted() {
+    this.my_name=window.localStorage.getItem('user')
   },
   methods: {
     async authentication(login, password) {
@@ -50,6 +54,7 @@ export default {
         credentials: 'include', // для того чтобы сессия сохранялась между различными хостами
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://localhost:3000/',
 
         },
         body: JSON.stringify({
@@ -60,11 +65,14 @@ export default {
 
       const result = await response.json();
       console.log(result['user']['email'])
-      console.log('это то т самый токен дададададааааадч',result['token'])
+      // console.log('это то т самый токен дададададааааадч',result['token'])
       // let str1 = 'se234'
       window.localStorage.setItem('user', result['user']['email']);
       window.localStorage.setItem('jwt', result['token']);
+      console.log('login this htis: ', result['user']['is_admin'])
+      window.localStorage.setItem('is_admin', result['user']['is_admin'])
       console.log('result: ', result);
+      document.location.href = '/start'
     },
 
   }

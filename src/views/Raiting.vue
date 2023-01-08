@@ -43,7 +43,7 @@ export default {
     return {
       // основные элементы корзины
       partitens: [{1:1},{2:2},{3:3},{4:4}],
-      
+      my_name: "",
     }
   },
   computed: { 
@@ -52,6 +52,7 @@ export default {
     // await this.getItemsCart()
     // console.log('Компонент примонтирован!');
     // await anime()
+    this.my_name = window.localStorage.getItem('user')
   },
   methods: {
     // кнопка удалить в корзине

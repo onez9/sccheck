@@ -118,30 +118,33 @@ app.use(session({
 
 // app.use(express.json())
 app.use((req, res, next) => {
-	console.log('headers request: ', req.headers)
+	// console.log('headers request: ', req.headers)
+	// console.log('my coockie is: ', req.cookies)
   if (req.headers.authorization) {
     jwt.verify(req.headers.authorization, config.secret, (err, payload) => {
 				// console.log('this is payload blad suka tupaya: ', payload)
 			if (err) {
 				// console.log(err)
-				next()
+				return next()
 				// res.send(500)
 			} else if (payload) {
 				// console.log('бляяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя ааааа')
 				if (req.session.user_id === payload.id) {
 					req.user = req.session.email
-					console.log('Все прошло успешно!!!!!!!!!!!!!!')
-					next()
+					// console.log('Все прошло успешно!!!!!!!!!!!!!!')
+					return next()
 				}
 				// res.send(200)
-				if (!req.user) next()
+				if (!req.user) return next()
 			}
 
 
     })
-  }
+  } else {
+		return next()
+	}
 
-  next()
+
 })
 
 
