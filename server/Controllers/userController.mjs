@@ -8,10 +8,11 @@ import jwt from 'jsonwebtoken'
 import sqlite3 from 'sqlite3'
 const urlencodedParser = express.urlencoded({extended: false})
 
+const db_path = './curs_summer.db'
 
 router.post('/', urlencodedParser, function(req, res) {
   console.log(req.body)
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
 			console.log(err)
 		}

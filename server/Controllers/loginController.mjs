@@ -9,9 +9,13 @@ import jwt from 'jsonwebtoken'
 import sqlite3 from 'sqlite3'
 const urlencodedParser = express.urlencoded({extended: false})
 
+
+
+const db_path = './curs_summer.db'
+
 router.post('/', urlencodedParser, (req, res) => {
   console.log('start login')
-  let db = new sqlite3.Database('../curs_summer.db', (err)=>{
+  let db = new sqlite3.Database(db_path, (err)=>{
     console.log(err)
   })
   db.get(`SELECT * FROM users WHERE email = ?`, [req.body.email], function(err,user) {

@@ -8,8 +8,12 @@ import sqlite3 from 'sqlite3'
 const urlencodedParser = express.urlencoded({extended: false})
 import {v4} from 'uuid'
 
+
+
+const db_path = './curs_summer.db'
+
 router.post('/upd', urlencodedParser, async (req, res) => {
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
 			console.log(err)
 		}
@@ -27,7 +31,7 @@ router.post('/upd', urlencodedParser, async (req, res) => {
 })
 
 router.post('/del', async (req, res) => {
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
 			console.log(err)
 		}
@@ -55,7 +59,7 @@ router.post('/del', async (req, res) => {
 
 // возврат всех всех курсов
 router.post('/getall', urlencodedParser, async (req, res)=>{
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
 			console.log(err)
 		}
@@ -103,7 +107,7 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 
 router.post('/add_subscribe_on_cource', urlencodedParser, async (req,res)=>{
 	
-	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
+	let db=new sqlite3.Database(db_path, (err)=>{
 		if(err) console.log(err)
 	})
 
@@ -121,7 +125,7 @@ router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
 	console.log('2 подписки на курсы: ', req.session)
 	// req.session.save()
 	
-	let db=new sqlite3.Database('../curs_summer.db', (err)=>{
+	let db=new sqlite3.Database(db_path, (err)=>{
 		if(err) console.log(err)
 	})
 
@@ -143,7 +147,7 @@ router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
 
 // получение пользоваателем только тех которые он создал
 router.post('/get_own_cource', urlencodedParser, async (req,res) => {
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) console.log(err)
 	});
 	
@@ -205,7 +209,7 @@ router.post('/create', urlencodedParser, async (req, res) => {
 
 	
 
-	let db = new sqlite3.Database('../curs_summer.db', (err) => {
+	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
 			console.log(err)
 		}

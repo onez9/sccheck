@@ -3,9 +3,9 @@ import path from 'path';
 // import {main_data, authChecker} from '../models/model.mjs';
 const router = express.Router();
 import DB from '../db.mjs';
-import config from'../config/config.mjs';
+import config from '../config/config.mjs';
 
-const db = new DB("../../curs_summer.db")
+const db = new DB("./curs_summer.db")
 
 
 router.post('/', function(req, res) {

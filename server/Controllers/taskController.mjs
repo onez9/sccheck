@@ -1,7 +1,7 @@
 import express from 'express';
 const router = express.Router();
 import sqlite3 from 'sqlite3'
-const db_path = "../curs_summer.db"
+const db_path = "./curs_summer.db"
 const urlencodedParser = express.urlencoded({extended: true})
 
 
