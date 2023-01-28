@@ -63,7 +63,7 @@ import courceController from './Controllers/courceController.mjs'
 import userController from './Controllers/userController.mjs'
 import answerController from './Controllers/answerController.mjs'
 import config from './config/config.mjs'
-
+import courceTimeController from './Controllers/courceTimeController.mjs'
 
 
 const corsOptions = {
@@ -160,7 +160,7 @@ app.use('/cource', courceController);
 app.use('/task', taskController);
 app.use('/user', userController);
 app.use('/answer', answerController);
-
+app.use('/cource_time', courceTimeController);
 
 
 // const ip='192.168.0.105'

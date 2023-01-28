@@ -71,6 +71,9 @@ export default {
 	computed: {
 
 	},
+	props: {
+		url: String,
+	},
 	async mounted() {
 		await this.getusers()
 		this.my_name = window.localStorage.getItem('user')
@@ -78,7 +81,7 @@ export default {
 	methods: {
 
 		async getusers() {
-			const response = await fetch(`${url}/user`, {
+			const response = await fetch(`${this.url}/user`, {
 				method: "POST"
 			})
 			this.users = await response.json()

@@ -36,7 +36,7 @@ import config from '../config.mjs'
 
 <script>
 // const url='http://192.168.149.184:3000'
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
   // el: '#elements',
   data() {
@@ -54,13 +54,16 @@ export default {
     // await anime()
     this.my_name = window.localStorage.getItem('user')
   },
+  props: {
+    url: String,
+  },
   methods: {
     // кнопка удалить в корзине
     async anime() {
       // console.log('123')
       // this.cart_items.splice(this.cart_items.indexOf(element), 1)
       // alert(this.elements.indexOf(element))
-      const response = await fetch(`${url}/get_users`, {
+      const response = await fetch(`${this.url}/get_users`, {
         method: 'GET',
         
       })
@@ -71,7 +74,7 @@ export default {
 
     async test_get() {
 
-      axios.get(`${url}/get_users`).then(resp => {
+      axios.get(`${this.url}/get_users`).then(resp => {
         console.log(resp.data);
       
       });

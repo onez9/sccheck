@@ -33,7 +33,7 @@ import config from '../config.mjs'
 </template>
 
 <script>
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {
@@ -45,11 +45,14 @@ export default {
   async mounted() {
     this.my_name=window.localStorage.getItem('user')
   },
+  props: {
+    url: String,
+  },
   methods: {
     async authentication(login, password) {
       console.log('это localStorage в Login.vue: ', localStorage, sessionStorage)
       // Отправляем запрос типа POST
-      const response = await fetch(`${url}/login`, {
+      const response = await fetch(`${this.url}/login`, {
         method: 'POST', 
         credentials: 'include', // для того чтобы сессия сохранялась между различными хостами
         headers: {

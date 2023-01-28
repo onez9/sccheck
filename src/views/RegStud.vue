@@ -70,7 +70,7 @@ import config from '../config.mjs'
 
 <script>
 // import { crypto } from 'crypto'
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {
@@ -82,6 +82,9 @@ export default {
       pass2: "",
       my_name: "",
     }
+  },
+  props: {
+    url: String,
   },
   async mounted() {
     this.my_name = window.localStorage.getItem('user')
@@ -113,33 +116,8 @@ export default {
 
       console.log(jsonResult);
     },
-    async testPost() {
-      // Отправляем запрос типа POST
-      const response = await fetch('/testpost', {
-        method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: "Иван"
-        }) 
-      });
 
-      const jsonResult = await response.json();
 
-      console.log(jsonResult);
-    },
-    async testGet() {
-      // Отправляем запрос типа GET
-      const response = await fetch('/testget', {
-        method: 'GET',
-        // 'Access-Control-Allow-Origin': '*'
-      });
-
-      const textResult = await response.text();
-
-      console.log(textResult);
-    }
   }
 }
 </script>

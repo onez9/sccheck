@@ -85,6 +85,26 @@ router.post('/get', urlencodedParser, async (req, res) => {
 	})
 })
 
+router.post('/get_task_answer_cource', urlencodedParser, async (req, res) => {
+	let db = new sqlite3.Database(db_path, (err) => {
+		if (err) {
+			console.log(err)
+		}
+		console.log('connect ok')
+
+	});
+	let query = `select * from answers
+		left join tasks on answers.task_id=tasks.id
+		where user_id=? and cource_id=?`
+	let stmt = db.prepare(query)
+	stmt.all([req.body.user_id, req.body.cource_id], (err, row) => {
+		console.log('log from: get_task_answer_cource.', row)
+		stmt.finalize()
+		res.json(row)
+	})
+
+
+})
 router.post('/get_task_cource', urlencodedParser, async (req, res) => {
 	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) {
@@ -96,7 +116,7 @@ router.post('/get_task_cource', urlencodedParser, async (req, res) => {
 
 	let stmt = db.prepare('select * from tasks where cource_id=?')
 	stmt.all(req.body.cource_id, (err, row) => {
-		console.log('id=1', row)
+		console.log('log from: get_task_cource.', row)
 		stmt.finalize()
 		res.json(row)
 	})

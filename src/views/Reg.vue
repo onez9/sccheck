@@ -83,7 +83,7 @@ import config from '../config.mjs'
 <script>
 // import { crypto } from 'crypto'
 // const url='http://192.168.149.184:3000'
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {
@@ -96,6 +96,9 @@ export default {
       is_admin: "",
       my_name: "",
     }
+  },
+  props: {
+    url: String,
   },
   async mounted() {
     this.my_name = window.localStorage.getItem('user')
@@ -110,7 +113,7 @@ export default {
       // const hash = sha256.update(password).digest('base64');
 
       console.log(123)
-      const response = await fetch(`${url}/user/adduser`, {
+      const response = await fetch(`${this.url}/user/adduser`, {
         method: 'POST', 
         headers: {
           'Content-Type': 'application/json'

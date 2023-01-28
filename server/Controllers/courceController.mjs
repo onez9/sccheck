@@ -216,42 +216,47 @@ router.post('/create', urlencodedParser, async (req, res) => {
 		console.log('connect ok')
 	});
 
-	//вставили новый курс
-	db.serialize(() => {
-		// тут просто создается курс с указанием - кто его создал
-		let stmt = db.prepare(`insert into cources(name,theme,description,runtime,imgpath,user_id) values (?,?,?,?,?,?)`)
-		stmt.run(name,theme,description,runtime,imgpath,req.session.user_id)
-		stmt.finalize();
-	});
+
+	if (req.session.user_id!==undefined) {
+		//вставили новый курс
+		db.serialize(() => {
+			// тут просто создается курс с указанием - кто его создал
+			let stmt = db.prepare(`insert into cources(name,theme,description,runtime,imgpath,user_id) values (?,?,?,?,?,?)`)
+			stmt.run(name,theme,description,runtime,imgpath,req.session.user_id)
+			stmt.finalize();
+		});
+	}
 	
 	// вернули все курсы для конкретного польлзователя
-	db.serialize(() => {
-		const stmt = db.prepare('select * from cources where user_id=?')
-		stmt.all([req.body.user_id], (err, rows) => {
-			if (err) console.log(err)
+	// db.serialize(() => {
+	// 	const stmt = db.prepare('SELECT * FROM cources WHERE user_id=?')
+	// 	console.log('bla bla bla user_id: ', req.body.user_id)
+	// 	stmt.all([req.body.user_id], (err, rows) => {
+	// 		if (err) console.log(err)
 
-			//console.log(rows)
+	// 		//console.log(rows)
 
-			let answer = []
-			// console.log(rows)
-			for (let item of rows) {
-				console.log(item)
-				answer.push({
-					id: item.id,
-					name_cource: item.name,
-					theme_cource: item.theme,
-					description_cource: item.description,
-					runtime_cource: item.runtime,
-					user_id: item.user_id,
-					imgpath: item.imgpath,
+	// 		let answer = []
+	// 		// console.log(rows)
+	// 		for (let item of rows) {
+	// 			console.log(item)
+	// 			answer.push({
+	// 				id: item.id,
+	// 				name_cource: item.name,
+	// 				theme_cource: item.theme,
+	// 				description_cource: item.description,
+	// 				runtime_cource: item.runtime,
+	// 				user_id: item.user_id,
+	// 				imgpath: item.imgpath,
 
-				})
-			}
-			res.json(answer)
-		})
-		console.log(stmt)
+	// 			})
+	// 		}
+	// 		res.json(answer)
+	// 	})
+	// 	console.log(stmt)
 
-	});
+	// });
+	res.json({ok:200})
 	
 
 	

@@ -42,31 +42,12 @@ import config from './config.mjs'
 
 
 
-            <!-- <li class="nav-item dropdown">
-
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi-journals"></i>
-                Курсы
-              </a>
-              <ul class="dropdown-menu">
-                
-                <li><router-link class="nav-link dropdown-item" to="/cources"><i class="bi-plus"></i> Новый курс</router-link></li>
-                <li><router-link class="nav-link dropdown-item" to="#"> Мои курсы</router-link></li>
-                <li><router-link class="nav-link dropdown-item" to="#"> Все курсы</router-link></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#"></a></li>
-              </ul>
-            </li> -->
-
 
 
           </ul>
 
           <div class="d-flex">
-            <!-- <div>
-              <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> 
-              <router-link class="nav-link" to="/auth"><i class="bi-box-arrow-in-left"></i> Войти</router-link>
-            </div> -->
+
             <div class="me-2">
               <span class="navbar-text">
                 {{ my_name }}
@@ -82,7 +63,9 @@ import config from './config.mjs'
 
   </header>
   <main class="container">
-    <RouterView /> <!--Именно в этом месте vue-router будет загружать компоненты в соответствие с навигацией-->
+    <RouterView 
+    :url="url"
+    /> <!--Именно в этом месте vue-router будет загружать компоненты в соответствие с навигацией-->
   </main>
 
 
@@ -95,11 +78,11 @@ import config from './config.mjs'
     <div class="container">
       <div class="row">
         
-        <div class="col-6 col-md-2">
-          <h5>тестирование онлайн</h5>
+        <div class="col-6">
+          <h5>Тестирование онлайн</h5>
           <ul class="nav flex-column">
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Домашняя</a></li>
-            <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вакансии</a></li>
+            <!-- <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Домашняя</a></li> -->
+            <!-- <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вакансии</a></li> -->
             <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вопросы и ответы</a></li>
             <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">О нас</a></li>
           </ul>
@@ -136,6 +119,7 @@ export default {
       pass2: "",
       elements: "Песонажи",
       my_name: "",
+      url: `http://${config.host}:${config.port}`,
     }
   },
   async mounted() {

@@ -24,13 +24,16 @@ import config from '../config.mjs'
 </template>
 
 <script>
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {
       cources: [],
       my_name: "",
     }
+  },
+  props: {
+    url: String,
   },
   async mounted() {
     // await this.testGet()

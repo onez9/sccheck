@@ -42,7 +42,6 @@ import config from '../config.mjs'
       <!-- <div class="col-2"></div> -->
       <div v-if="is_admin==1" class="col-5 border border-primary rounded p-1 mt-1">
         <h5>Мои курсы</h5>
-
         <div @click="activeElem = element" v-for="(element, index) in own_usr_cources" :key="index">
           <div class="border-primary border rounded p-1 mb-2">
             <!-- {{ element.id }} -->
@@ -67,7 +66,7 @@ import config from '../config.mjs'
                 <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
                   
-                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
+                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-danger mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
                   <button v-if="element.editmode" @click="update_cource(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-check-square"></i></button>
                   <button v-if="!element.show_tasks" @click="show_tasks1(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-list-columns"></i></button>
                   <button v-if="element.show_tasks" @click="element.show_tasks=false" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-list-columns"></i></button>
@@ -155,6 +154,10 @@ import config from '../config.mjs'
               <div v-if="element.editmode" class="d-flex flex-column w-100">
                 <!-- <input v-ifplaceholder="Название курса" type="text" class="form-control  mt-1 me-1 mb-1" v-model="element.name"> -->
                 <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button>-->
+                <!-- <div class="d-flex justify-content-end"> -->
+                <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-dark mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
+        
+                <!-- </div> -->
                 <img v-bind:src="element.imgpath" class="product-image">
                 
                 <label>Название курса:</label>
@@ -174,15 +177,14 @@ import config from '../config.mjs'
                 <label>Время прохождения курса:</label>
                 <label class="form-control mt-1 me-1 mb-1">{{element.runtime_cource}}</label>
 
-                <div class="flex-grow-1 mb-3 bg-dark"></div>
+                <!-- <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
-                  
-                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
+                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-dark mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
         
-                </div>
+                </div> -->
               </div>
-              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-eyeglasses"></i></button>
-              <button v-if="!element.editmode" @click="add_subscribe_on_cource(element) " class="btn btn-info mt-1 me-1 mb-1"><i class="bi-link"></i></button>
+              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-success mt-1 me-1 mb-1"><i class="bi bi-eye"></i></button>
+              <button v-if="!element.editmode" @click="add_subscribe_on_cource(element) " class="btn btn-danger mt-1 me-1 mb-1"><i class="bi-link"></i></button>
             </div>
 
             <!-- {{element.show_task}} -->
@@ -248,8 +250,8 @@ import config from '../config.mjs'
 </template>
 
 <script>
-// const url='http://192.168.149.184:3000'
-const url=`http://${config.host}:${config.port}`
+// const this.url='http://192.168.149.184:3000'
+//const this.url=`http://${config.host}:${config.port}`
 export default {
 	data() {
 		return {
@@ -266,17 +268,24 @@ export default {
 			new_mode_cource: false,
       show_create_button: false,
       my_name: "",
+      // url: `http://${config.host}:${config.port}`
 		}
 	},
+  props: {
+    url: String,
+  },
 	computed: {
 
 	},
+
 	async mounted() {
     this.my_name = window.localStorage.getItem('user')
     await this.get_own_usr_cources()
     await this.getcourcesall() // все все курсы которые есть
     this.is_admin = parseInt(window.localStorage.getItem('is_admin'))
+    
 	},
+  
 	methods: {
     async edit_task(task, number) {
       
@@ -299,7 +308,7 @@ export default {
           break;
       }
 
-      const response = await fetch(`${url}/task/upd`, {
+      const response = await fetch(`${this.url}/task/upd`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -321,7 +330,7 @@ export default {
         id: element.id
       }
       console.log('this is pack: ', pack)
-      const response = await fetch(`${url}/cource/upd`, {
+      const response = await fetch(`${this.url}/cource/upd`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -340,7 +349,7 @@ export default {
       console.log('start show task method')
       element.show_tasks=true
       element.create_task=false
-      const response = await fetch(`${url}/task/get`, {
+      const response = await fetch(`${this.url}/task/get`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -377,7 +386,7 @@ export default {
 
 
       console.log(task)
-      const response = await fetch(`${url}/task/add`, {
+      const response = await fetch(`${this.url}/task/add`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -415,7 +424,7 @@ export default {
     async get_own_usr_cources() {
       // const myid={id: 22}
       // получение пользоваателем только тех которые он создал
-      const response = await fetch(`${url}/cource/get_own_cource`, {
+      const response = await fetch(`${this.url}/cource/get_own_cource`, {
         method: 'POST',
         credentials: 'include',
 
@@ -440,7 +449,7 @@ export default {
     },
 
     async add_subscribe_on_cource(cource) {
-      await fetch(`${url}/cource/add_subscribe_on_cource`, {
+      await fetch(`${this.url}/cource/add_subscribe_on_cource`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -460,7 +469,7 @@ export default {
 
     // все-все курсы для возврата
     async getcourcesall() {
-      const response = await fetch(`${url}/cource/getall`, {
+      const response = await fetch(`${this.url}/cource/getall`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -497,7 +506,7 @@ export default {
       // console.log(window.localStorage.getItem('user'))
       // formData={1:1,2:2}
 
-      const response = await fetch(`${url}/cource/create`, {
+      const response = await fetch(`${this.url}/cource/create`, {
         method: 'POST',
 
         credentials: 'include',
@@ -506,16 +515,16 @@ export default {
       })
       // console.log(await response.json())
       let result = await response.json()
-      console.log(result)
+      console.log('Тут ответ который возвращает запрос: ', result)
 
-      this.own_usr_cources = result // загружаем курсы с сервера
-      for (let i=0;i<this.own_usr_cources.length;i++) {
-        this.own_usr_cources[i].list_tasks =[]
-      }
+      // this.own_usr_cources = result // загружаем курсы с сервера
+      // for (let i=0;i<this.own_usr_cources.length;i++) {
+      //   this.own_usr_cources[i].list_tasks =[]
+      // }
 
 
 
-      await this.get_own_usr_cources()
+      await this.get_own_usr_cources() // получаем все курсы с мои курсы
       await this.getcourcesall() // все все курсы которые есть
 
 

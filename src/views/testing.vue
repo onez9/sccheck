@@ -24,9 +24,12 @@ import config from '../config.mjs'
 
           <div class="border border-primary rounded p-1 mb-1">
             <label class="">Название курса: {{cource.name}}</label><br>
-            <label class="">Время на выполнение: {{cource.runtime}}</label><br>
+            <label class="">Отлично: {{cource.runtime}} мин.</label><br>
+            <label class="">Ваше время: {{cource.transit_time}} мин.</label><br>
             <label class="">Оценка выполнения: {{cource.grade}}%</label><br>
-            <button class="btn btn-warning"><i class="bi-x-square"></i></button>
+            <!-- {{ cource }} -->
+            <button v-if="!cource.show_button" @click="show_answers_cource(cource)" class="btn btn-warning"><i class="bi bi-eye"></i> Показать ответы</button>
+            <button v-if="cource.show_button" @click="hide_answers(cource)" class="btn btn-danger"><i class="bi bi-eye"></i> Cкрыть ответы</button>
           </div>
         </div>
 
@@ -41,6 +44,23 @@ import config from '../config.mjs'
         
       </div> -->
 
+      <div class="col-sm-7" v-if="show_answer_mode">
+        <h5>Ответы на курс "{{ cource_selected }}":</h5>
+        <div v-for="(element, index) in answers_tasks" :key="index" class="border border-primary rounded p-1 mb-1">
+          <div class="d-flex">
+            <label class="mt-1 mb-1 me-auto">Название задачи:</label> <label>{{element.ntask}}</label>
+        
+          </div>
+          <div class="d-flex">
+            <label class="mt-1 mb-1 me-auto">Описание задачи:</label> {{element.dtask}}<br>
+          </div>
+          <div class="d-flex">
+            <label class="mt-1 mb-1 me-auto">Ваш ответ на задачу:</label> {{element.answer}}<br>
+          </div>
+
+
+        </div>
+      </div>
       <div class="col-sm-7" v-if="show_task_test_mode">
         <h5>Список задач для прохождения:</h5>
         <div class="input-group">
@@ -48,10 +68,11 @@ import config from '../config.mjs'
           <label class="form-control mt-1 mb-1">{{activeItem.name}}</label>
           <button v-if="!show_start_test_mode" @click="start_test" class="btn btn-success mt-1 mb-1">Начать выполнение</button>
         </div>
-        <label>Время на выполнение курса: {{activeItem.runtime}} мин.</label>
+        <label>Время на выполнение курса: {{activeItem.runtime}} мин. </label><br>
+        <label>Времени прошло: {{ timer_label }}</label>
         
         <div v-for="(task, index) in tasks" :key="index">
-          {{task}}
+          <!-- {{task}} -->
           <div class="border border-success rounded p-1 mb-1">
             <label class="mt-1 mb-1 me-1">Название задачи: {{task.ntask}}</label><br>
             <label class="mt-1 mb-1 me-1">Описание задачи: {{task.dtask}}</label><br>
@@ -71,13 +92,6 @@ import config from '../config.mjs'
           
         </div>
         <label v-if="show_grade" class="form-control">Ваша оценка за тест (Приемлемо 80%):{{grade.grade}}%</label>
-        <!-- <textarea v-model="code_input" class="form-control mt-1" name="code_input" id="code_input" rows="10"></textarea>
-        <textarea class="form-control mt-1 mb-1" name="code_input" id="code_input" rows="10" disabled>{{code_input}}</textarea>
-        <div class="d-flex">
-          <input type="file" class="form-control me-1">
-          <button class="btn btn-warning me-1">Проверить</button>
-          <button @click="" class="btn btn-danger">Отправить</button>
-        </div> -->
       </div>
 		</div>
 	</div>
@@ -86,7 +100,7 @@ import config from '../config.mjs'
 
 <script>
 // const url='http://192.168.149.184:3000'
-const url=`http://${config.host}:${config.port}`
+// const url=`http://${config.host}:${config.port}`
 export default {
 	data() {
 		return {
@@ -102,8 +116,17 @@ export default {
       show_grade: false,
       end_cources: [],
       my_name: "",
+      show_answer_mode: false,
+      answers_tasks: [],
+      cource_selected: "",
+      // show_button_is: true,
+      timer_label: "",
+      si1: "",
 		}
 	},
+  props: {
+    url: String,
+  },
 	computed: {
 
 	},
@@ -115,7 +138,7 @@ export default {
 	},
 	methods: {
     async get_my_finish_cources() {
-      const response = await fetch(`${url}/answer/get_my_ended_cources`, {
+      const response = await fetch(`${this.url}/answer/get_my_ended_cources`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -128,11 +151,97 @@ export default {
       this.end_cources=await response.json()
       await this.show_my_subscribe_cources()
     },
+    async hide_answers(cource) {
+      cource.show_button=false
+      this.show_task_test_mode=false
+      this.show_answer_mode=false
+    },
+    async show_answers_cource(cource) {
+      this.show_task_test_mode=false
+      this.show_answer_mode=true
+      // console.log(cource.name)
+      this.cource_selected = cource.name
+
+      cource.show_button = true // скрыть кнопку показать ответы
+      // тут мы запрашиваем задачи для пройденного курса
+      console.log('courcid: ', cource.cource_id)
+      const response = await fetch(`${this.url}/task/get_task_answer_cource`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt'),
+
+        },
+        body: JSON.stringify({
+          cource_id: cource.cource_id,
+          user_id: cource.uid,
+        })
+        // 'Access-Control-Allow-Origin': '*'
+      });
+      this.answers_tasks = await response.json()
+      console.log('тут должен быть ответ задач для показа ответа пройденных курсов:', this.tasks)
+
+
+
+    },
     async start_test() {
       this.show_start_test_mode=true
+      this.timer_label = "00:00:00"
+      let seconds=0
+      let minuts=0
+      let hours=0
+
+      this.si1 = setInterval(() => {
+        seconds++
+        if (seconds % 60 == 0) { 
+          minuts++ 
+          seconds=0
+
+          if (minuts % 60 == 0) {
+            hours++
+            minuts=0
+          }
+
+        }
+
+        let s_hour=hours.toString()
+        let s_min=minuts.toString()
+        let s_sec=seconds.toString()
+        s_hour = (s_hour.length==1)? '0'+s_hour:s_hour
+        s_min = (s_min.length==1)? '0'+s_min:s_min
+        s_sec = (s_sec.length==1)? '0'+s_sec:s_sec
+        let s_time = `${s_hour}:${s_min}:${s_sec}`
+        console.log(s_time)
+        this.timer_label = s_time
+      },1000)
+
+
+
+      const response = await fetch(`${this.url}/cource_time`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': window.localStorage.getItem('jwt')
+
+        },
+        body: JSON.stringify({
+          cource_id: this.activeItem.cource_id,
+        })
+
+      })
+      // тут получили ответ
+      console.log(await response.json());
+
+
+
 
     },
     async send_data() { // заполнениее таблицы answers
+      
+      clearInterval(this.si1)
+      
       this.show_start_test_mode=false // скрыть что-либо/показать
       this.show_grade = true
       let answers = []
@@ -145,7 +254,7 @@ export default {
         })
         // console.log(item.answer_user_task)
       }
-      const response = await fetch(`${url}/answer/add`, {
+      const response = await fetch(`${this.url}/answer/add`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -169,7 +278,7 @@ export default {
 
     async show_my_subscribe_cources() { // показывает мои курсы с except
       // Отправляем запрос типа GET
-      const response = await fetch(`${url}/cource/get_my_subscribe_cource`, {
+      const response = await fetch(`${this.url}/cource/get_my_subscribe_cource`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -188,7 +297,7 @@ export default {
       this.activeItem = cource
       this.grade = 0
       this.show_task_test_mode = true // когда нажали на кнопку пройти происходит показ таблицы задач // запрос этих задач курса
-      const response = await fetch(`${url}/task/get_task_cource`, {
+      const response = await fetch(`${this.url}/task/get_task_cource`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -204,7 +313,7 @@ export default {
     },
     async delete_the_cource(cource) {
       this.tasks = []
-      const response = await fetch(`${url}/cource/del`, {
+      const response = await fetch(`${this.url}/cource/del`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
