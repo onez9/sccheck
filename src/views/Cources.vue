@@ -8,8 +8,8 @@ import config from '../config.mjs'
     <!-- adsfsfa: {{is_admin}} -->
     <div class="row">
       <!-- {{is_admin}} -->
-      <div v-if="is_admin==1" class="col-5 border border-success rounded p-1">
-        <div v-if="new_mode_cource==true" class="border border-success rounded p-1">
+      <div v-if="is_admin==1" class="col-5 border border-5 border-danger rounded p-1">
+        <div v-if="new_mode_cource==true" class="border border-5 border-success rounded p-1">
           <h5>Новый курс</h5>
 
           <label for="name_cource">Название</label>
@@ -34,16 +34,16 @@ import config from '../config.mjs'
 
         <button v-if="new_mode_cource==true " @click="create_cource" class="btn btn-info mt-1 mb-1 me-1">Создать</button>
         <button v-if="new_mode_cource==true" @click="clear_input_for_cource" class="btn btn-success m-1">Закрыть</button>
-        <button v-if="new_mode_cource==false" @click="new_mode_cource=true" class="btn border border-primary form-control mt-1 mb-1 me-1">Новый Курс</button>
+        <button v-if="new_mode_cource==false" @click="new_mode_cource=true" class="btn border border-primary mt-1 mb-1 me-1"><i class="bi bi-plus-square"></i></button>
         
 
       </div>
       <div v-if="is_admin==1" class="col-7"></div>
       <!-- <div class="col-2"></div> -->
-      <div v-if="is_admin==1" class="col-5 border border-primary rounded p-1 mt-1">
+      <div v-if="is_admin==1 && !new_mode_cource" class="col-12 border border-5 border-warning rounded p-1 mt-1">
         <h5>Мои курсы</h5>
         <div @click="activeElem = element" v-for="(element, index) in own_usr_cources" :key="index">
-          <div class="border-primary border rounded p-1 mb-2">
+          <div class="border-warning border border-5 rounded p-1 mb-2">
             <!-- {{ element.id }} -->
             <div class="d-flex">
               <label v-if="!element.editmode" class="form-control mt-1 mb-1 me-1">{{element.name_cource}}</label>
@@ -65,13 +65,23 @@ import config from '../config.mjs'
 
                 <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
+
+                  <div>
+                    <button v-if="element.editmode" @click="closeEditMode(element)" class="btn btn-danger mt-1 me-1 mb-1"><i class="bi bi-x-square"></i> Закрыть</button>
+                    <button v-if="element.editmode" @click="update_cource(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi bi-check-square"></i> Применить</button>
+                  </div>
+                  <div>
+                    <button v-if="element.show_tasks" @click="element.show_tasks=false" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi bi-list-columns"></i></button>
+                    <button v-if="!element.show_tasks" @click="show_tasks1(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi bi-list-columns"></i> Показать список задач</button>
+                  </div>
+                  <div>
+                    <button v-if="element.create_task" @click="element.create_task=false" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi bi-plus-square"></i> Скрыть</button>
+                    <button v-if="!element.create_task" @click="element.create_task=true" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi bi-plus-square"></i> Добавить задачу</button>
+                  </div>
+                
                   
-                  <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-danger mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
-                  <button v-if="element.editmode" @click="update_cource(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-check-square"></i></button>
-                  <button v-if="!element.show_tasks" @click="show_tasks1(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-list-columns"></i></button>
-                  <button v-if="element.show_tasks" @click="element.show_tasks=false" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-list-columns"></i></button>
-                  <button v-if="!element.create_task" @click="element.create_task=true" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-plus-square"></i></button>
-                  <button v-if="element.create_task" @click="element.create_task=false" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-plus-square"></i></button>
+                  
+                
                 </div>
               </div>
               <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button>
@@ -141,50 +151,52 @@ import config from '../config.mjs'
           <!-- {{element}} -->
         </div>
       </div>
-      <div class="col-2"></div>
 
-      <div class="col-5 border border-primary rounded p-1 mt-1">
+      <div v-if="!new_mode_cource" class="col-12 border border-warning border-5 rounded p-1 mt-3">
         <h5>Все курсы</h5>
 
         <div @click="activeElem = element" v-for="(element, index) in full_list_cources" :key="index">
-          <div class="border-primary border rounded p-1 mb-2">
+          <div class="border-warning border border-5 rounded p-1 mb-2">
             <!-- {{ element.id }} -->
             <div class="d-flex">
-              <label v-if="!element.editmode" class="form-control mt-1 mb-1 me-1">{{element.name_cource}}</label>
-              <div v-if="element.editmode" class="d-flex flex-column w-100">
+              <div v-if="element.showmode" class="d-flex flex-column w-100">
                 <!-- <input v-ifplaceholder="Название курса" type="text" class="form-control  mt-1 me-1 mb-1" v-model="element.name"> -->
                 <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button>-->
                 <!-- <div class="d-flex justify-content-end"> -->
-                <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-dark mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
+                
         
                 <!-- </div> -->
-                <img v-bind:src="element.imgpath" class="product-image">
-                
-                <label>Название курса:</label>
-                <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
-                <label class="form-control mt-1 me-1 mb-1">{{element.name_cource}}</label>
-                <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
-                <label>Тема курса:</label>
-                <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
-                <label class="form-control mt-1 me-1 mb-1">{{element.theme_cource}}</label>
-                <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
-                <label>Описание курса:</label>
-                <label class="form-control mt-1 me-1 mb-1">{{element.description_cource}}</label>
-                
-                <label>Автор курса:</label>
-                <label class="form-control mt-1 me-1 mb-1">{{element.author_cource}}</label>
+                <img v-bind:src="element.imgpath" class="">
+                <table class="table table-sm table-bordered rounded">
 
-                <label>Время прохождения курса:</label>
-                <label class="form-control mt-1 me-1 mb-1">{{element.runtime_cource}}</label>
-
+                  
+                  <tbody>
+                    <tr><th>Название курса:</th><td> {{element.name_cource}}</td></tr>
+                    <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
+                    <!-- <label class="form-control mt-1 me-1 mb-1"> -->
+                    <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
+                    <tr><th>Тема курса:</th><td> {{element.theme_cource}}</td></tr>
+                    <!-- <button @click="element.editmode=true" v-if="!element.editmode" class="btn btn-warning mt-1 me-1 mb-1"><i class="bi-gear"></i></button> -->
+                    <!-- <label class="form-control mt-1 me-1 mb-1">{{element.theme_cource}}</label> -->
+                    <!-- <button @click="element.editmode=true" v-if="element.editmode" class="btn btn-danger"><i class="bi-x-square"></i></button> -->
+                    <tr><th>Описание курса:</th><td>{{element.description_cource}}</td></tr>
+                    
+                    <tr><th>Автор курса:</th><td>{{element.author_cource}}</td></tr>
+                    <tr><th>Время прохождения курса:</th><td> {{element.runtime_cource}}</td></tr>
+                  </tbody>
+                </table>
+                <div class="d-flex justify-content-end"><button @click="closeShowMode(element)" v-if="element.showmode" class="btn btn-dark mt-1 mb-1"><i class="bi-x-square"></i> Закрыть</button></div>
                 <!-- <div class="flex-grow-1 mb-3 bg-dark"></div>
                 <div class="d-flex justify-content-end">
                   <button @click="closeEditMode(element)" v-if="element.editmode" class="btn btn-dark mt-1 me-1 mb-1"><i class="bi-x-square"></i></button>
         
                 </div> -->
               </div>
-              <button v-if="!element.editmode" @click="editmode(element)" class="btn btn-success mt-1 me-1 mb-1"><i class="bi bi-eye"></i></button>
-              <button v-if="!element.editmode" @click="add_subscribe_on_cource(element) " class="btn btn-danger mt-1 me-1 mb-1"><i class="bi-link"></i></button>
+              <div class="input-group" v-if="!element.showmode">
+                <label class="form-control">{{element.name_cource}}</label>
+                <button @click="showelement(element)" class="btn btn-info"><i class="bi bi-eye"></i></button>
+                <button @click="add_subscribe_on_cource(element) " class="btn btn-danger"><i class="bi bi-link"></i></button>
+              </div>
             </div>
 
             <!-- {{element.show_task}} -->
@@ -227,22 +239,6 @@ import config from '../config.mjs'
       </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </div>
   </div>
 
@@ -268,7 +264,10 @@ export default {
 			new_mode_cource: false,
       show_create_button: false,
       my_name: "",
-      // url: `http://${config.host}:${config.port}`
+      active: "",
+      activeElem: "",
+      inactive: "",
+      inactive_for_my_cources: "",
 		}
 	},
   props: {
@@ -342,7 +341,22 @@ export default {
       console.log(await response.json())
     },
     async editmode(element) {
-      element.editmode=true
+      element.editmode=true // показываем элемент
+      this.activeElem=element
+      if (this.inactive_for_my_cources!="" && this.activeElem!=this.inactive_for_my_cources) this.inactive_for_my_cources.editmode=false
+      this.inactive_for_my_cources=this.activeElem
+
+
+
+    },
+    async showelement(element) {
+      element.showmode=true // показываем элемент
+      this.active=element // записываем элемент
+
+      if (this.inactive != "" && this.active!=this.inactive) this.inactive.showmode=false
+      this.inactive=this.active
+      console.log('this.active: ', this.active)
+      //this.active.editmode = false
       //const response = await fetch('http://localhost:3000/cource/get')
     },
     async show_tasks1(element) {
@@ -354,7 +368,7 @@ export default {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-
+          'authorization': window.localStorage.getItem('jwt')
         },
         body: JSON.stringify({id: element.id})
       }) 
@@ -363,8 +377,8 @@ export default {
       element.list_tasks = answer
       
     },
-    async closeEditMode(element) {
-      element.editmode=false
+    async closeShowMode(element) {
+      element.showmode=false
       element.show_tasks=false
       element.create_task=false
       element.dtask=""
@@ -372,6 +386,14 @@ export default {
       element.answer_task=""
       // element.runtime=10
 
+    },
+    async closeEditMode(element) {
+      element.editmode=false
+      element.show_tasks=false
+      element.create_task=false
+      element.dtask=""
+      element.ntask=""
+      element.answer_task=""
     },
 
     async addTask(element) {
@@ -391,7 +413,7 @@ export default {
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-
+          'authorization': window.localStorage.getItem('jwt')
         },
         body: JSON.stringify(task)
       })
@@ -508,8 +530,10 @@ export default {
 
       const response = await fetch(`${this.url}/cource/create`, {
         method: 'POST',
-
         credentials: 'include',
+        headers: {
+          'authorization': window.localStorage.getItem('jwt')
+        },
         body: formData
 
       })

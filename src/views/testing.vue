@@ -21,15 +21,37 @@ import config from '../config.mjs'
         <h5>Мои пройденные курсы:</h5>
         <div v-for="(cource, key) in end_cources" :key="key">
           <!-- console.log(cource) -->
+{{ cource }}
+          <div class="border border-5 border-primary rounded p-1 mb-1">
 
-          <div class="border border-primary rounded p-1 mb-1">
-            <label class="">Название курса: {{cource.name}}</label><br>
-            <label class="">Отлично: {{cource.runtime}} мин.</label><br>
-            <label class="">Ваше время: {{cource.transit_time}} мин.</label><br>
-            <label class="">Оценка выполнения: {{cource.grade}}%</label><br>
-            <!-- {{ cource }} -->
+
+
+            <div v-if="!cource.show_more" class="input-group">
+              <label class="form-control me-auto">{{cource.name}}</label>
+              <button @click="show_more(cource)" class="btn btn-info"><i class="bi bi-three-dots"></i></button>
+ 
+            </div>
+            <table class="table table-sm table-bordered " v-if="cource.show_more">
+              <tbody>
+                <tr><td>Название курса:</td> <td>{{cource.name}}</td></tr>
+                <tr><td>Отлично:</td> <td>{{cource.runtime}} мин.</td></tr>
+                <tr><td>Ваше время:</td> <td>{{cource.transit_time}} мин.</td></tr>
+                <tr><td>Оценка выполнения:</td> <td>{{cource.grade}}%</td></tr>
+              </tbody>
+            </table>
+            <div v-if="cource.show_more" class="input-group">
+              <button v-if="!cource.show_button" @click="show_answers_cource(cource)" class="btn btn-warning me-auto"><i class="bi bi-eye"></i> Показать ответы</button>
+              <button v-if="cource.show_button" @click="hide_answers(cource)" class="btn btn-danger me-auto"><i class="bi bi-eye"></i> Cкрыть ответы</button>
+              <button v-if="cource.show_more" @click="hide_more(cource)" class="btn btn-danger"><i class="bi bi-eye"></i> Cкрыть подробности</button>
+              
+            </div>
+            
+            <!-- <label class=""> </label><br>
+            <label class=""> </label><br>
+            <label class=""> </label><br>
+            <label class=""> </label><br>
             <button v-if="!cource.show_button" @click="show_answers_cource(cource)" class="btn btn-warning"><i class="bi bi-eye"></i> Показать ответы</button>
-            <button v-if="cource.show_button" @click="hide_answers(cource)" class="btn btn-danger"><i class="bi bi-eye"></i> Cкрыть ответы</button>
+            <button v-if="cource.show_button" @click="hide_answers(cource)" class="btn btn-danger"><i class="bi bi-eye"></i> Cкрыть ответы</button> -->
           </div>
         </div>
 
@@ -46,20 +68,35 @@ import config from '../config.mjs'
 
       <div class="col-sm-7" v-if="show_answer_mode">
         <h5>Ответы на курс "{{ cource_selected }}":</h5>
-        <div v-for="(element, index) in answers_tasks" :key="index" class="border border-primary rounded p-1 mb-1">
-          <div class="d-flex">
-            <label class="mt-1 mb-1 me-auto">Название задачи:</label> <label>{{element.ntask}}</label>
-        
-          </div>
-          <div class="d-flex">
-            <label class="mt-1 mb-1 me-auto">Описание задачи:</label> {{element.dtask}}<br>
-          </div>
-          <div class="d-flex">
-            <label class="mt-1 mb-1 me-auto">Ваш ответ на задачу:</label> {{element.answer}}<br>
-          </div>
+        <table class="table table-bordered border border-primary">
+          <thead>
+            <tr>
+              <td class="col-6">Описание</td> 
+              <td>Ответ</td>
+            </tr>
+          </thead>
+        </table>
 
+        <table v-for="(element, index) in answers_tasks" :key="index" class="table-bordered border border-primary rounded p-1 mb-3 w-100">
+          <!-- {{ element }} -->
+          <tbody>
+            <tr>
+              <th class="col-6">Номер задачи:</th><th>{{index+1}}</th>
+            </tr>
+            <tr>
+              <td class="col-6">Название задачи:</td><td>{{element.ntask}}</td>
+            </tr>
+            <tr>
+              <td>Описание задачи:</td><td>{{element.dtask}}</td>
+            </tr>
+            <tr>
+              <td>Ваш ответ на задачу:</td><td>{{element.answer}}</td>
+            </tr>
+            
+          </tbody>
 
-        </div>
+        </table>
+
       </div>
       <div class="col-sm-7" v-if="show_task_test_mode">
         <h5>Список задач для прохождения:</h5>
@@ -150,6 +187,12 @@ export default {
 
       this.end_cources=await response.json()
       await this.show_my_subscribe_cources()
+    },
+    async show_more(cource) {
+      cource.show_more=true
+    },
+    async hide_more(cource) {
+      cource.show_more=false
     },
     async hide_answers(cource) {
       cource.show_button=false
@@ -299,9 +342,10 @@ export default {
       this.show_task_test_mode = true // когда нажали на кнопку пройти происходит показ таблицы задач // запрос этих задач курса
       const response = await fetch(`${this.url}/task/get_task_cource`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          credentials: 'include'
+
         },
         body: JSON.stringify({
           cource_id: cource.cource_id
@@ -315,9 +359,10 @@ export default {
       this.tasks = []
       const response = await fetch(`${this.url}/cource/del`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
-          credentials: 'include'
+
         },
         body: JSON.stringify({
           user_id: cource.user_id,
@@ -325,8 +370,9 @@ export default {
         })
         // 'Access-Control-Allow-Origin': '*'
       });
-      // console.log(await response.json())
+      
       this.cources = await response.json()
+      console.log('bibibibibbiibbibi: ', this.cources)
     }
 
 

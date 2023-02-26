@@ -1,12 +1,12 @@
 import express from 'express';
 import path from 'path';
-// import {main_data, authChecker} from '../models/model.mjs';
 const router = express.Router();
 import DB from '../db.mjs';
 import config from'../config/config.mjs';
 import sqlite3 from 'sqlite3'
 const urlencodedParser = express.urlencoded({extended: false})
 import {v4} from 'uuid'
+
 
 
 
@@ -39,6 +39,8 @@ router.post('/del', async (req, res) => {
 
 	});
 
+	console.log('req.body(cource/del): ', req.body)
+	console.log('req.session(cource/del): ', req.session)
 	let stmt = db.prepare('delete from users_cources where cource_id=? and user_id=?')
 	stmt.run([req.body.cource_id, req.session.user_id], (err, rows)=>{
 		if (err) console.log(err)
@@ -47,8 +49,12 @@ router.post('/del', async (req, res) => {
 		// res.json({ok:200})
 	})
 
-	stmt=db.prepare('select * from users left join users_cources on users.id=users_cources.user_id left join cources on users_cources.cource_id=cources.id where users.id=? and users_cources.cource_id not null')
-	stmt.all([req.body.user_id], (err,rows)=>{
+	stmt=db.prepare(`select * from users 
+										left join users_cources on users.id=users_cources.user_id 
+											left join cources on users_cources.cource_id=cources.id 
+												where users.id=? and users_cources.cource_id not null`)
+	stmt.all([req.session.user_id], (err,rows)=>{
+		console.log('cource/del: ',  rows)
 		res.json(rows)
 		stmt.finalize()
 	})
@@ -82,7 +88,7 @@ router.post('/getall', urlencodedParser, async (req, res)=>{
 					runtime_cource: item.runtime,
 					user_id: item.user_id,
 					author: item.email,
-					imgpath: 'server/Pictures/e557e870-e841-4263-b55c-86131d8aaf55.jpg',
+					imgpath: 'server/Pictures/b48a1c7d-40f5-4870-9376-0cae6146b385.jpg',
 
 				})
 			} else {
@@ -117,6 +123,10 @@ router.post('/add_subscribe_on_cource', urlencodedParser, async (req,res)=>{
 		res.json({ok: 200})
 		stmt.finalize()
 	})
+
+
+
+	
 })
 
 router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
@@ -130,12 +140,17 @@ router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
 	})
 
 	// получаем список всех курсов пользователя которые он не прошёл
-	let stmt=db.prepare(`select * from (select user_id as uid, cource_id from users_cources
-		except 
-		select user_id as uid, cource_id from grades) as r1
-		left join cources on r1.cource_id=cources.id
-		left join users on r1.uid=users.id
-		where users.id=?;`)
+	// let stmt=db.prepare(`select * from (select user_id as uid, cource_id from users_cources
+	// 	except 
+	// 	select user_id as uid, cource_id from grades) as r1
+	// 	left join cources on r1.cource_id=cources.id
+	// 	left join users on r1.uid=users.id
+	// 	where users.id=?`)
+
+	let stmt=db.prepare(`select * from (select user_id as uid, cource_id from users_cources) as r1
+												left join cources on r1.cource_id=cources.id
+													left join users on r1.uid=users.id
+														where users.id=?`)
 	stmt.all([req.session.user_id], (err,rows)=>{
 		// console.log('rows 1231231', rows)
 		res.json(rows) // ошибка была в том что у нас 2 раза выполнялось то что не должно выполняться
@@ -145,7 +160,7 @@ router.post('/get_my_subscribe_cource', urlencodedParser, async (req,res)=>{
 })
 
 
-// получение пользоваателем только тех которые он создал
+// получение пользователем только тех которые он создал
 router.post('/get_own_cource', urlencodedParser, async (req,res) => {
 	let db = new sqlite3.Database(db_path, (err) => {
 		if (err) console.log(err)
@@ -156,9 +171,7 @@ router.post('/get_own_cource', urlencodedParser, async (req,res) => {
 		if (err) console.log(err)
 
 		let answer = []
-		// console.log(rows)
 		for (let item of rows) {
-			//console.log(item)
 			answer.push({
 				id: item.id,
 				name_cource: item.name,
@@ -172,7 +185,7 @@ router.post('/get_own_cource', urlencodedParser, async (req,res) => {
 		}
 		console.log('user_id: ', req.session.user_id)
 		// console.log('user_id: ', req.session.user_id)
-		console.log('answer can be tthis place: ', answer)
+		console.log('answer can be this place: ', answer)
 		
 		res.status(200).json(answer)
 	});
@@ -227,35 +240,6 @@ router.post('/create', urlencodedParser, async (req, res) => {
 		});
 	}
 	
-	// вернули все курсы для конкретного польлзователя
-	// db.serialize(() => {
-	// 	const stmt = db.prepare('SELECT * FROM cources WHERE user_id=?')
-	// 	console.log('bla bla bla user_id: ', req.body.user_id)
-	// 	stmt.all([req.body.user_id], (err, rows) => {
-	// 		if (err) console.log(err)
-
-	// 		//console.log(rows)
-
-	// 		let answer = []
-	// 		// console.log(rows)
-	// 		for (let item of rows) {
-	// 			console.log(item)
-	// 			answer.push({
-	// 				id: item.id,
-	// 				name_cource: item.name,
-	// 				theme_cource: item.theme,
-	// 				description_cource: item.description,
-	// 				runtime_cource: item.runtime,
-	// 				user_id: item.user_id,
-	// 				imgpath: item.imgpath,
-
-	// 			})
-	// 		}
-	// 		res.json(answer)
-	// 	})
-	// 	console.log(stmt)
-
-	// });
 	res.json({ok:200})
 	
 

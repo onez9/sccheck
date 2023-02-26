@@ -10,7 +10,7 @@ import config from './config.mjs'
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <i class="bi-diagram-3-fill"></i>
-          Stepic
+          {{ sitename }}
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -23,11 +23,12 @@ import config from './config.mjs'
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="products.html"><i class="bi-bag-check"></i> Товары</a> -->
-              <router-link class="nav-link" to="/raiting"><i class="bi-star"></i> Рейтинг</router-link>
+              <!-- <router-link class="nav-link" to="/raiting"><i class="bi-star"></i> Рейтинг</router-link> -->
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
-              <router-link class="nav-link" to="/users"><i class="bi-person-circle"></i> Участники</router-link>
+              <router-link class="nav-link" to="/users"><i class="bi-star"></i> Рейтинг</router-link>
+              <!-- <router-link class="nav-link" to="/users"><i class="bi-person-circle"></i> Участники</router-link> -->
             </li>
             <li class="nav-item">
               <!-- <a class="nav-link" href="about.html"><i class="bi-file-earmark-person"></i> О нас</a> -->
@@ -65,6 +66,7 @@ import config from './config.mjs'
   <main class="container">
     <RouterView 
     :url="url"
+    :description="description"
     /> <!--Именно в этом месте vue-router будет загружать компоненты в соответствие с навигацией-->
   </main>
 
@@ -111,6 +113,8 @@ console.log(config.host)
 export default {
   data() {
     return {
+      sitename: "Тестирование онлайн",
+      description: "Сайт для проведения тестирования онлайн",
       firstname: "",
       lastname: "",
       email: "",
@@ -129,6 +133,8 @@ export default {
     async logout() {
       this.my_name=""
       window.localStorage.clear()
+      const response = await fetch(`${this.url}/logout`)
+      console.log(`response: ${await response.json()}`)
     },
     async login() {
       this.my_name = window.localStorage.getItem('user')

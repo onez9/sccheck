@@ -9,8 +9,12 @@ import config from '../config.mjs'
     <button class="btn btn-danger m-3" @click="testPost">Тест POST запроса</button>
   </div> -->
 
-  <h3>Сайт для тестирования навыков программирования</h3>
-  <p>Добро пожаловать!<br>Большое количество качественных и бесплатных курсов от настоящих профи</p>
+  <h3>{{ description }}</h3>
+  <p>Добро пожаловать!</p>
+  <ul>
+    <li>Простое и удобное создание курсов</li>
+    <li>Ведение статистики</li>
+  </ul>
   <!-- <div v-for="(cource, index) in cources">
     <label class="form-control bt-1 be-1 mb-1">{{ cource.name }}</label>
   </div> -->
@@ -30,10 +34,19 @@ export default {
     return {
       cources: [],
       my_name: "",
+      property: "Blank"
     }
+  },
+  beforeCreate() {
+    console.log("Выполняется при инициализации компонента");
+    console.log("Данные ещё не стали реактивными, а события не настроены.")
+  },
+  created() {
+
   },
   props: {
     url: String,
+    description: String,
   },
   async mounted() {
     // await this.testGet()
