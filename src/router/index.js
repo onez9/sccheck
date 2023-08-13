@@ -7,6 +7,7 @@ import RegView from '../views/Reg.vue'
 // import RegPrepView from '../views/RegPrep.vue'
 import LoginView from '../views/Login.vue'
 import RaitingView from '../views/Raiting.vue'
+import Swal from 'sweetalert2'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +76,8 @@ const router = createRouter({
 
 // Глобальные навигационные хуки вызываются в порядке их создания при каждом навигационном переходе.
 router.beforeEach((to, from, next) => {
+  
+  
   console.log('to: ',to.matched)
   console.log('from: ',from)
   console.log('next: ',next)
@@ -82,14 +85,23 @@ router.beforeEach((to, from, next) => {
   let res = to.matched.some(record => {
     console.log('какое-то рекорд: ', record)
     console.log('это тру или фолсу: ', record.meta.requiresAuth)
+
+
+    
+    
+    
     return record.meta.requiresAuth
   })
+
+
+
   if(res) { // есить ли те у кого требуется права админа т.е. такие маршруты есть для которых требуется авторризация
     if (localStorage.getItem('jwt') == null) { // если jwt равен нуля или undefined - на логин панель
       next({
         path: '/login',
         params: { nextUrl: to.fullPath }
       })
+      Swal.fire('Авторизуйтесь пожалуйста')
     } else {
       console.log('get localStorage: ', localStorage.getItem('user'))
       let user = localStorage.getItem('user')

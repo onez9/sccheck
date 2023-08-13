@@ -8,13 +8,13 @@ import config from '../config.mjs'
     <!-- <p>Список товаров</p> -->
     <!-- <form action="/sendProduct" method="POST" enctype="multipart/form-data"> -->
     <!-- {{currentPage}} -->
-    <a href="http://localhost:3000/get_users">anime</a>
+    <a :href="`${url}/get_users`">anime</a>
     <button class="btn btn-success" @click="anime">all ok</button>
     <table class="table table-striped table-hover">
       <tbody>
         <tr @click="activeElem = element" v-for="(element, index) in partitens" :key="index">
 
-          {{element}}
+          <!-- {{element}} -->
           <!-- <div class="card shadow rounded my-1">
             <div class="card-body">
               <div class="row">
@@ -35,8 +35,6 @@ import config from '../config.mjs'
 </template>
 
 <script>
-// const url='http://192.168.149.184:3000'
-// const url=`http://${config.host}:${config.port}`
 export default {
   // el: '#elements',
   data() {
@@ -60,6 +58,7 @@ export default {
   methods: {
     // кнопка удалить в корзине
     async anime() {
+      console.log(this.url)
       // console.log('123')
       // this.cart_items.splice(this.cart_items.indexOf(element), 1)
       // alert(this.elements.indexOf(element))

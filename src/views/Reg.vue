@@ -15,9 +15,10 @@ import config from '../config.mjs'
       <div class="row">
         <!-- <div class="col-sm-12 d-flex align-items-center flex-column"> -->
         <!-- <div class="col-sm-3"></div> -->
-        <div class="col-sm-5 d-flex d-column flex-column">
+        <!-- <div class="col-sm-5 d-flex d-column flex-column"> -->
+        <div class="col-sm-12 d-flex justify-content-center">
 
-          <form method="POST" action="http://localhost:3000/register">
+          <form class="col-sm-7" method="POST" :action="`${url}/register`">
             <label for="firstname">Имя:</label>
             <input name="firstname" type="text" id="firstname" class="form-control" required>
             <label for="lastname">Фамилия:</label>
@@ -35,13 +36,13 @@ import config from '../config.mjs'
             <input v-model="pass1" name="password1" type="password" id="pass1" class="form-control" required>
             <label for="pass2">Повторите пароль: {{pass2}}</label>
             <input v-model="pass2" name="password2" type="password" id="pass2" class="form-control" required>
-            <button :class="{'btn btn-success mt-1 me-1': true, 'disabled': (pass1!=pass2)}" type="submit"><i class="bi-person-plus"></i> Создать</button>
-
-            <router-link to="/auth" customv-slot="{ navigate }">
+            <button :class="{'btn btn-success form-control mt-1 me-1': true, 'disabled': (pass1!=pass2)}" type="submit"><i class="bi-person-plus"></i> Создать</button>
+            <router-link to="/login">Авторизация</router-link>
+            <!-- <router-link to="/auth" customv-slot="{ navigate }">
               <button class="btn btn-success mt-1" @click="navigate" role="link">
                 <i class="bi-box-arrow-in-left"></i> Авторизация
               </button>
-            </router-link>
+            </router-link> -->
           </form>
 
 
@@ -81,9 +82,6 @@ import config from '../config.mjs'
 </template>
 
 <script>
-// import { crypto } from 'crypto'
-// const url='http://192.168.149.184:3000'
-// const url=`http://${config.host}:${config.port}`
 export default {
   data() {
     return {

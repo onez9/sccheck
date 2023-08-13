@@ -81,7 +81,7 @@ import config from './config.mjs'
       <div class="row">
         
         <div class="col-6">
-          <h5>Тестирование онлайн</h5>
+          <h5>Todo</h5>
           <ul class="nav flex-column">
             <!-- <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Домашняя</a></li> -->
             <!-- <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Вакансии</a></li> -->
@@ -131,9 +131,17 @@ export default {
   },
   methods: {
     async logout() {
+      console.log('Включение метода logout...')
       this.my_name=""
       window.localStorage.clear()
-      const response = await fetch(`${this.url}/logout`)
+      // const response = await fetch(`${this.url}/logout`)
+      const response = await fetch(`/logout`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({123:123})
+      })
       console.log(`response: ${await response.json()}`)
     },
     async login() {

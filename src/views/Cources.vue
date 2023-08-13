@@ -8,8 +8,8 @@ import config from '../config.mjs'
     <!-- adsfsfa: {{is_admin}} -->
     <div class="row">
       <!-- {{is_admin}} -->
-      <div v-if="is_admin==1" class="col-5 border border-5 border-danger rounded p-1">
-        <div v-if="new_mode_cource==true" class="border border-5 border-success rounded p-1">
+      <div v-if="true" class="col-5 border border-1 border-danger rounded p-1">
+        <div v-if="new_mode_cource==true" class="border border-1 border-success rounded p-1">
           <h5>Новый курс</h5>
 
           <label for="name_cource">Название</label>
@@ -40,10 +40,11 @@ import config from '../config.mjs'
       </div>
       <div v-if="is_admin==1" class="col-7"></div>
       <!-- <div class="col-2"></div> -->
-      <div v-if="is_admin==1 && !new_mode_cource" class="col-12 border border-5 border-warning rounded p-1 mt-1">
+      <!-- <div v-if="is_admin==1 && !new_mode_cource" class="col-12 border border-1 border-warning rounded p-1 mt-1"> -->
+      <div v-if="true" class="col-12 border border-1 border-warning rounded p-1 mt-1">
         <h5>Мои курсы</h5>
         <div @click="activeElem = element" v-for="(element, index) in own_usr_cources" :key="index">
-          <div class="border-warning border border-5 rounded p-1 mb-2">
+          <div class="border-warning border border-1 rounded p-1 mb-2">
             <!-- {{ element.id }} -->
             <div class="d-flex">
               <label v-if="!element.editmode" class="form-control mt-1 mb-1 me-1">{{element.name_cource}}</label>
@@ -152,11 +153,11 @@ import config from '../config.mjs'
         </div>
       </div>
 
-      <div v-if="!new_mode_cource" class="col-12 border border-warning border-5 rounded p-1 mt-3">
+      <div v-if="!new_mode_cource" class="col-12 border border-warning border-1 rounded p-1 mt-3">
         <h5>Все курсы</h5>
 
         <div @click="activeElem = element" v-for="(element, index) in full_list_cources" :key="index">
-          <div class="border-warning border border-5 rounded p-1 mb-2">
+          <div class="border-warning border border-1 rounded p-1 mb-2">
             <!-- {{ element.id }} -->
             <div class="d-flex">
               <div v-if="element.showmode" class="d-flex flex-column w-100">

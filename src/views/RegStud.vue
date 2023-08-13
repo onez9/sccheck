@@ -69,8 +69,7 @@ import config from '../config.mjs'
 </template>
 
 <script>
-// import { crypto } from 'crypto'
-// const url=`http://${config.host}:${config.port}`
+
 export default {
   data() {
     return {

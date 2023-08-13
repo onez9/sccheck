@@ -21,7 +21,7 @@ router.post('/', urlencodedParser, function(req, res) {
     req.body.group, 
     bcrypt.hashSync(req.body.password1, 8)
   ]
-
+  console.log(user_pack, 'may be,,,may be')
 
   const db = new sqlite3.Database(db_path, (err)=>{
     console.log(err)
@@ -40,12 +40,15 @@ router.post('/', urlencodedParser, function(req, res) {
 			
     let token = jwt.sign({ id: rows.id }, config.secret, { expiresIn: 86400 });
     req.session.token=token
-    res.status(200).send({ 
-      auth: true, 
-      token: token, 
-      user: rows
-    });
+    // res.status(200).send({ 
+    //   auth: true, 
+    //   token: token, 
+    //   user: rows
+    // });
     stmt.finalize()
+    res.redirect(`http://${config.host}:5173/login`)
+    // res.redirect('/login')
+
 
 
   })

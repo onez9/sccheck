@@ -21,8 +21,8 @@ import config from '../config.mjs'
         <h5>Мои пройденные курсы:</h5>
         <div v-for="(cource, key) in end_cources" :key="key">
           <!-- console.log(cource) -->
-{{ cource }}
-          <div class="border border-5 border-primary rounded p-1 mb-1">
+          <!-- {{ cource }} -->
+          <div class="border border-1 border-primary rounded p-1 mb-1">
 
 
 
@@ -105,14 +105,14 @@ import config from '../config.mjs'
           <label class="form-control mt-1 mb-1">{{activeItem.name}}</label>
           <button v-if="!show_start_test_mode" @click="start_test" class="btn btn-success mt-1 mb-1">Начать выполнение</button>
         </div>
-        <label>Время на выполнение курса: {{activeItem.runtime}} мин. </label><br>
+        <label>Время на выполнение курса: {{ activeItem.runtime }} мин. </label><br>
         <label>Времени прошло: {{ timer_label }}</label>
         
         <div v-for="(task, index) in tasks" :key="index">
           <!-- {{task}} -->
           <div class="border border-success rounded p-1 mb-1">
-            <label class="mt-1 mb-1 me-1">Название задачи: {{task.ntask}}</label><br>
-            <label class="mt-1 mb-1 me-1">Описание задачи: {{task.dtask}}</label><br>
+            <label class="mt-1 mb-1 me-1">Название задачи: {{ task.ntask }}</label><br>
+            <label class="mt-1 mb-1 me-1">Описание задачи: {{ task.dtask }}</label><br>
             <label for="an_ta">Введите ответ на задачу:</label>
             <input v-model="task.answer_user_task" type="text" id="an_ta" class="form-control" :disabled="!show_start_test_mode">
             <!-- <label class="form-control mt-1 mb-1 me-1">Ответ на задачу: {{task.answer_task}}</label> -->
@@ -257,7 +257,8 @@ export default {
         let s_time = `${s_hour}:${s_min}:${s_sec}`
         console.log(s_time)
         this.timer_label = s_time
-      },1000)
+
+      }, 1000)
 
 
 

@@ -5,7 +5,7 @@ import config from'../config/config.mjs';
 
 
 router.get('/', (req,res) => {
-	console.log('Вы нажали на кнопку выхода!')
+	console.log('Вы находитесь в контроллере main!')
 	// if (!req.body) res.sendStatus(500);
 	// req.session.destroy();
 	// res.sendStatus(200)

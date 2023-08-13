@@ -13,17 +13,18 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
+cd create_test
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+### Run client
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+### Run server
 
 ```sh
-npm run build
+node server/server.mjs
 ```

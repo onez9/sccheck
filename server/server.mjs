@@ -67,7 +67,7 @@ import courceTimeController from './Controllers/courceTimeController.mjs'
 
 
 const corsOptions = {
-	origin: 'http://localhost:5173',  //Your Client, do not write '*'
+	origin: 'http://192.168.1.9:5173',  //Your Client, do not write '*'
 	credentials: true,
 };
 app.use(cors(corsOptions));
@@ -149,8 +149,11 @@ app.use((req, res, next) => {
 
 
 
-
-
+// app.use('*', main)
+app.get('*', (req, res)=>{
+	console.log('hello')
+	res.sendFile(path.resolve('index.html'))
+})
 
 app.use('/login', loginController);
 app.use('/logout', logoutController);
