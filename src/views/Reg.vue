@@ -32,9 +32,9 @@ import config from '../config.mjs'
 
 
 
-            <label for="pass1">Введите пароль: {{pass1}}</label>
+            <label for="pass1">Введите пароль: </label>
             <input v-model="pass1" name="password1" type="password" id="pass1" class="form-control" required>
-            <label for="pass2">Повторите пароль: {{pass2}}</label>
+            <label for="pass2">Повторите пароль: </label>
             <input v-model="pass2" name="password2" type="password" id="pass2" class="form-control" required>
             <button :class="{'btn btn-success form-control mt-1 me-1': true, 'disabled': (pass1!=pass2)}" type="submit"><i class="bi-person-plus"></i> Создать</button>
             <router-link to="/login">Авторизация</router-link>

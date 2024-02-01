@@ -1,21 +1,23 @@
-# create_test
+####
 
+```
+Проект находится в разработке, ошибки будут
 
-## Project Setup
-
-```sh
-cd create_test
-npm install
 ```
 
-### Run client
+#### Установка
+```bash
+git clone https://github.com/onez9/sccheck
+cd sccheck
+npm i
+```
 
-```sh
+#### Запуск клиентской части на vue.js
+```bash
 npm run dev
 ```
 
-### Run server
-
-```sh
+#### Запуск серверной части на express.js
+```bash
 node server/server.mjs
 ```

@@ -20,8 +20,10 @@ router.post('/upd', urlencodedParser, async (req, res) => {
 		console.log('connect update ok')
 
 	});
-	console.log('test /upd/ cource', req.body)
-	console.log(123123123, req.body.name, req.body.theme, req.body.description, req.body.runtime, req.body.id)
+	// console.log('test /upd/ cource', req.body)
+	// console.log(123123123, req.body.name, req.body.theme, req.body.description, req.body.runtime, req.body.id)
+	
+	
 	let stmt = db.prepare('update cources set name=?, theme=?, description=?, runtime=? where id=?')
 	stmt.run([req.body.name, req.body.theme, req.body.description, req.body.runtime, req.body.id], (err, row)=>{
 		console.log(row)
@@ -41,6 +43,10 @@ router.post('/del', async (req, res) => {
 
 	console.log('req.body(cource/del): ', req.body)
 	console.log('req.session(cource/del): ', req.session)
+
+
+
+
 	let stmt = db.prepare('delete from users_cources where cource_id=? and user_id=?')
 	stmt.run([req.body.cource_id, req.session.user_id], (err, rows)=>{
 		if (err) console.log(err)

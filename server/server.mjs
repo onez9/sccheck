@@ -67,7 +67,7 @@ import courceTimeController from './Controllers/courceTimeController.mjs'
 
 
 const corsOptions = {
-	origin: 'http://192.168.1.9:5173',  //Your Client, do not write '*'
+	origin: 'http://192.168.1.103:5173',  //Your Client, do not write '*'
 	credentials: true,
 };
 app.use(cors(corsOptions));
@@ -118,25 +118,26 @@ app.use(session({
 
 // app.use(express.json())
 app.use((req, res, next) => {
-	// console.log('headers request: ', req.headers)
+	console.log('headers request: ', req.headers)
 	// console.log('my coockie is: ', req.cookies)
+
   if (req.headers.authorization) {
     jwt.verify(req.headers.authorization, config.secret, (err, payload) => {
 				// console.log('this is payload blad suka tupaya: ', payload)
-			if (err) {
-				// console.log(err)
+		if (err) {
+			// console.log(err)
+			return next()
+			// res.send(500)
+		} else if (payload) {
+			console.log('бляяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя ааааа')
+			if (req.session.user_id === payload.id) {
+				req.user = req.session.email
+				console.log('Все прошло успешно!!!!!!!!!!!!!!')
 				return next()
-				// res.send(500)
-			} else if (payload) {
-				// console.log('бляяяяяяяяяяяяяяяяяяяяяяяяяяяяяяя ааааа')
-				if (req.session.user_id === payload.id) {
-					req.user = req.session.email
-					// console.log('Все прошло успешно!!!!!!!!!!!!!!')
-					return next()
-				}
-				// res.send(200)
-				if (!req.user) return next()
 			}
+			// res.send(200)
+			if (!req.user) return next()
+		}
 
 
     })
